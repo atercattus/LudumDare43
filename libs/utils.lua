@@ -5,6 +5,8 @@ local mathAtan = math.atan
 local mathSin = math.sin
 local mathCos = math.cos
 local mathRound = math.round
+local tonumber = tonumber
+local stringFormat = string.format
 
 local M = {}
 
@@ -80,6 +82,10 @@ function M.copyPlain(src)
         dst[k] = v
     end
     return dst
+end
+
+function M.round(num, numDecimalPlaces)
+    return tonumber(stringFormat("%." .. (numDecimalPlaces or 0) .. "f", num))
 end
 
 return M

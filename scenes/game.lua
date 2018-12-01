@@ -42,7 +42,7 @@ function scene:setup()
     local objects = {}
     scene.objects = objects
 
-    local txtCoins = display.newText({ text = "LudumCoins: 43", width = W, font = fontName, fontSize = 32, align = 'left' })
+    local txtCoins = display.newText({ text = '', width = W, font = fontName, fontSize = 32, align = 'left' })
     txtCoins:setFillColor(1, 1, 0.4)
     txtCoins.anchorX = 0
     txtCoins.anchorY = 0
@@ -51,7 +51,7 @@ function scene:setup()
     self.view:insert(txtCoins)
     objects.txtCoins = txtCoins
 
-    local txtExchange = display.newText({ text = "Xchg: 47 Mh/LC", width = W - 5, font = fontName, fontSize = 32, align = 'right' })
+    local txtExchange = display.newText({ text = '', width = W - 5, font = fontName, fontSize = 32, align = 'right' })
     txtExchange:setFillColor(1, 1, 0.4)
     txtExchange.anchorX = 0
     txtExchange.anchorY = 0
@@ -60,7 +60,7 @@ function scene:setup()
     self.view:insert(txtExchange)
     objects.txtExchange = txtExchange
 
-    local txtHashPerSec = display.newText({ text = "100 Mh/sec", width = W, font = fontName, fontSize = 32, align = 'center' })
+    local txtHashPerSec = display.newText({ text = '', width = W, font = fontName, fontSize = 32, align = 'center' })
     txtHashPerSec:setFillColor(1, 1, 0.4)
     txtHashPerSec.anchorX = 0
     txtHashPerSec.anchorY = 0
@@ -199,12 +199,27 @@ function scene:buildShop()
     end
 end
 
+function scene:updateTxtCoins()
+    ui_utils.updateTxtWithSiffix(self.objects.txtCoins, scene.gameState.coins, '', 'LudumCoins: ')
+end
+
+function scene:updateTxtOutput()
+    ui_utils.updateTxtWithSiffix(self.objects.txtHashPerSec, scene.gameState.output, 'h/sec')
+end
+
+function scene:updateTxtExchange()
+    ui_utils.updateTxtWithSiffix(self.objects.txtExchange, scene.gameState.xchg, 'h/LC', 'xchg: ')
+end
+
 scene:addEventListener("show", function(event)
     if (event.phase == "will") then
         scene.gameState = newGameState()
 
         scene:loadResources()
         scene:setup()
+        scene:updateTxtCoins()
+        scene:updateTxtOutput()
+        scene:updateTxtExchange()
     end
 end)
 

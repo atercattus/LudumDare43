@@ -1,5 +1,13 @@
 local M = {}
 
+local log10 = math.log10
+local floor = math.floor
+
+local utils = require("libs.utils")
+local round = utils.round
+
+local powers = { 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' }
+
 function M.tableMouseScroller(rowHeight)
     return function(event)
         local tbl = event.target
@@ -32,8 +40,22 @@ function M.updateTxt_cost(txt, value)
     M.updateTxtWithSiffix(txt, value, 'LC')
 end
 
-function M.updateTxtWithSiffix(txt, value, siffux)
-    txt.text = value .. siffux
+function M.updateTxtWithSiffix(txt, value, suffix, prefix)
+    if value >= 1 then
+        local pow = floor(log10(value) / 3)
+
+        if pow > 0 then
+            if pow > #powers then
+                pow = #powers
+            end
+
+            local delim = 10 ^ (3 * pow)
+            value = round(value / delim, 0)
+            suffix = powers[pow] .. suffix
+        end
+    end
+
+    txt.text = (prefix or '') .. value .. suffix
 end
 
 return M
