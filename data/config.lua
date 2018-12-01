@@ -50,8 +50,9 @@ M.chips = {
     },
 }
 
-for i in ipairs(M.chips) do
-    M.chips[i].idx = i
+for i, chips in ipairs(M.chips) do
+    chips.idx = i
+    chips.power_consumption = chips.power_consumption / 60 -- Из минут в секунды
 end
 
 return M

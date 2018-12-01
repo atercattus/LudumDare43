@@ -4,6 +4,8 @@ local display = display
 local require = require
 local ipairs = ipairs
 
+local getTimer = system.getTimer
+
 local composer = require("composer")
 local graphics = require("graphics")
 local widget = require("widget")
@@ -186,15 +188,16 @@ function scene:buildShop()
 end
 
 function scene:updateTxtCoins()
-    ui_utils.updateTxtWithSiffix(self.objects.txtCoins, scene.gameState.coins, '', 'LudumCoins: ')
+    ui_utils.updateTxtWithSiffix(self.objects.txtCoins, self.gameState.coins, '', 'LudumCoins: ')
 end
 
 function scene:updateTxtOutput()
-    ui_utils.updateTxt_Hsec(self.objects.txtHashPerSec, scene.gameState.output)
+    local state = self.gameState
+    ui_utils.updateTxt_Hsec(self.objects.txtHashPerSec, state.output)
 end
 
 function scene:updateTxtExchange()
-    ui_utils.updateTxtWithSiffix(self.objects.txtExchange, scene.gameState.xchg, 'h/LC', 'xchg: ')
+    ui_utils.updateTxtWithSiffix(self.objects.txtExchange, self.gameState.xchg, 'h/LC', 'xchg: ')
 end
 
 function scene:buy(idx)
@@ -252,6 +255,14 @@ function scene:updateShop()
     end
 end
 
+function scene:updateCounters()
+    local now = getTimer()
+    local shortInfo = self.gameState:processingTick((now - self.updateCountersDt) / 1000)
+    self.updateCountersDt = now
+
+    self:updateTxtOutput()
+end
+
 scene:addEventListener("show", function(event)
     if (event.phase == "will") then
         scene.gameState = newGameState()
@@ -261,6 +272,9 @@ scene:addEventListener("show", function(event)
         scene:updateTxtCoins()
         scene:updateTxtOutput()
         scene:updateTxtExchange()
+
+        scene.updateCountersDt = getTimer()
+        timer.performWithDelay(500, function() scene:updateCounters() end, 0)
     end
 end)
 

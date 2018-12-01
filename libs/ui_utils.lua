@@ -54,10 +54,12 @@ function M.updateTxtWithSiffix(txt, value, suffix, prefix)
             end
 
             local delim = 10 ^ (3 * pow)
-            value = round(value / delim, 2)
+            value = value / delim
             suffix = powers[pow] .. suffix
         end
     end
+
+    value = (value < 100) and round(value, 2) or round(value, 0)
 
     txt.text = (prefix or '') .. value .. suffix
 end

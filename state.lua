@@ -6,18 +6,19 @@ local copyPlain = require('libs.utils').copyPlain
 
 local config = require("data.config")
 local epoches = config.epoches
-local chips = config.chips
+local chipsConfig = config.chips
 
 function M.newGameState()
     local state = {
         -- Состояние
         coins = 43.0, -- Сколько всего монет доступно (LC)
-        output = 0.0, -- Выработка в Mhash/sec
         xchg = 100, -- Текущий курс обмена Mhash на LC
         epoch = epoches.cpu, -- Текущее поколение чипов
         chipsList = {}, -- Купленные чипы
 
         -- Вычисляемые на каждом такте
+        output = 0.0, -- Выработка в Mhash/sec
+        outputTotal = 0.0, -- Выработка в hash/sec с момента прошлой покупки LC
         consumption = 0, -- Текущее потребление в W/sec
         consumptionCost = 0.0, -- Стоимость текущего потребления в LC/sec
     }
@@ -27,7 +28,7 @@ function M.newGameState()
 
         local epoch = self.epoch
 
-        for _, chip in ipairs(chips) do
+        for _, chip in ipairs(chipsConfig) do
             if chip.epoch <= epoch then
                 list[#list + 1] = copyPlain(chip)
             end
@@ -37,11 +38,11 @@ function M.newGameState()
     end
 
     function state:tryToBuy(chipIdx)
-        if (chipIdx < 1) or (chipIdx > #chips) then
+        if (chipIdx < 1) or (chipIdx > #chipsConfig) then
             return false
         end
 
-        local chipInfo = chips[chipIdx]
+        local chipInfo = chipsConfig[chipIdx]
 
         if (self.coins < chipInfo.cost) or (self.epoch < chipInfo.epoch) then
             return false
@@ -81,6 +82,28 @@ function M.newGameState()
         end
 
         return nil
+    end
+
+    function state:processingTick(dt)
+        local shortInfo = {}
+
+        local consumption = 0
+        local output = 0
+        local outputTotal = self.outputTotal
+        if dt > 0 then
+            for _, chips in ipairs(self.chipsList) do
+                local chipInfo = chipsConfig[chips.idx]
+                consumption = consumption + chips.count * chipInfo.power_consumption
+                output = output + chips.count * chipInfo.output
+                outputTotal = outputTotal + chips.count * chipInfo.output * dt
+            end
+        end
+
+        self.output = output
+        self.outputTotal = outputTotal
+        self.consumption = consumption
+
+        return shortInfo
     end
 
     return state
