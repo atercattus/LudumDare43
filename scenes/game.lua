@@ -142,11 +142,19 @@ function scene:setupShopTableAndTitle()
         shopBuilder.createRow(scene, event.row)
     end
 
+    local function onRowTouch(event)
+        if event.phase ~= 'tap' then
+            return
+        end
+        scene:buy(event.target.index)
+    end
+
     local tblShop = widget.newTableView({
         width = W - scene.objects.tblFarm.width - 25,
         height = H - rowHeight - 5,
         isBounceEnabled = false,
         onRowRender = onRowRender,
+        onRowTouch = onRowTouch,
     })
     tblShop.x = scene.objects.tblFarm.contentBounds.xMax + 15
     tblShop.y = 100
@@ -190,8 +198,6 @@ function scene:buildShop()
     for _, chip in pairs(list) do
         scene.objects.tblShop:insertRow({
             rowHeight = 100,
-            --rowColor = { 0, 0, 0, 1 },
-            --lineColor = { 0, 0, 0, 1 },
             params = {
                 idx = chip.idx,
             },
@@ -204,11 +210,58 @@ function scene:updateTxtCoins()
 end
 
 function scene:updateTxtOutput()
-    ui_utils.updateTxtWithSiffix(self.objects.txtHashPerSec, scene.gameState.output, 'h/sec')
+    ui_utils.updateTxt_Hsec(self.objects.txtHashPerSec, scene.gameState.output)
 end
 
 function scene:updateTxtExchange()
     ui_utils.updateTxtWithSiffix(self.objects.txtExchange, scene.gameState.xchg, 'h/LC', 'xchg: ')
+end
+
+function scene:buy(idx)
+    local shopRow = self.objects.tblShop:getRowAtIndex(idx)
+    if shopRow == nil then
+        print('WTF wrong buy idx' .. idx)
+        return
+    end
+
+    if self.gameState:tryToBuy(shopRow.params.idx) then
+        -- удалось
+        self:updateTxtCoins()
+        self:updateFarm()
+        -- ToDo: обновить доступность магазина
+    else
+        -- не удалось
+    end
+end
+
+function scene:updateFarm()
+    local tblFarm = self.objects.tblFarm
+    local chipsList = self.gameState.chipsList
+
+    local chipIdx2TblRow = {}
+    for i = 1, tblFarm:getNumRows() do
+        local row = tblFarm:getRowAtIndex(i)
+        chipIdx2TblRow[row.params.idx] = i
+    end
+
+    for _, chips in ipairs(chipsList) do
+        local tblRowIdx = chipIdx2TblRow[chips.idx]
+        if tblRowIdx ~= nil then
+            -- такая строка уже есть, нужно пересчитать
+            local tblFarmRow = tblFarm:getRowAtIndex(tblRowIdx)
+            farmBuilder.updateByState(self, tblFarmRow, chips.idx)
+        else
+            -- появилась новая строка
+            self.objects.tblFarm:insertRow({
+                rowHeight = 100,
+                params = {
+                    idx = chips.idx,
+                },
+            })
+        end
+    end
+
+    -- ToDo: удаление строк
 end
 
 scene:addEventListener("show", function(event)

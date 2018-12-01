@@ -94,19 +94,19 @@ function M.createRow(scene, parentRow)
     txtCost.anchorY = 1
     txtCost.y = rowHeight - 10
 
-    local chipInfo = config.chips[parentRow.params.idx]
-
-    M.updateByState(scene, parentRow, chipInfo)
+    M.updateByState(scene, parentRow, parentRow.params.idx)
 end
 
-function M.updateByState(scene, row, chipInfo)
+function M.updateByState(scene, row, chipIdx)
     local gameState = scene.gameState
+
+    local chipInfo = config.chips[chipIdx]
 
     row.objects.icon.fill.frame = chipInfo.epoch
 
     row.objects.txtName.text = chipInfo.name
     ui_utils.updateTxt_Hsec(row.objects.txtOutput, chipInfo.output)
-    ui_utils.updateTxt_Wsec(row.objects.txtConsumption, chipInfo.output)
+    ui_utils.updateTxt_Wsec(row.objects.txtConsumption, chipInfo.power_consumption)
     ui_utils.updateTxt_cost(row.objects.txtCost, chipInfo.cost)
 
     local isMoneyEnough = gameState.coins >= chipInfo.cost

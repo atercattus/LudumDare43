@@ -33,11 +33,15 @@ function M.updateTxt_Wsec(txt, value)
 end
 
 function M.updateTxt_Hsec(txt, value)
-    M.updateTxtWithSiffix(txt, value, ' H/s')
+    M.updateTxtWithSiffix(txt, value, ' h/s')
 end
 
 function M.updateTxt_cost(txt, value)
     M.updateTxtWithSiffix(txt, value, 'LC')
+end
+
+function M.updateTxt_count(txt, value)
+    M.updateTxtWithSiffix(txt, value, 'pcs')
 end
 
 function M.updateTxtWithSiffix(txt, value, suffix, prefix)

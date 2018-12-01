@@ -1,10 +1,10 @@
 local fontName = fontName
 
 local display = display
-local require = require
-local math = math
 
-local mathRandom = math.random
+local ui_utils = require("libs.ui_utils")
+
+local config = require("data.config")
 
 local M = {}
 
@@ -12,6 +12,8 @@ function M.createRow(scene, parentRow)
     local rowHeight = parentRow.contentHeight
     local rowWidth = parentRow.contentWidth
     local rowIdx = parentRow.index
+
+    parentRow.objects = {}
 
     local bg0 = display.newRect(parentRow, 0, 0, rowWidth, rowHeight)
     bg0.anchorX = 0
@@ -31,6 +33,7 @@ function M.createRow(scene, parentRow)
     local iconSize = 64
     local icon = display.newRect(0, 0, iconSize, iconSize)
     parentRow:insert(icon)
+    parentRow.objects.icon = icon
     local chipIdx = rowIdx
     if chipIdx > 3 then
         chipIdx = (chipIdx % 3) + 1
@@ -43,51 +46,71 @@ function M.createRow(scene, parentRow)
     posX = posX + iconSize + 10
 
     local textHeight = 30
-    local chipName = "Outel Kernel j" .. rowIdx
-    local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor( 1, 1, 1 )
-    rowTitle.anchorX = 0
-    rowTitle.x = posX
-    rowTitle.y = rowHeight - 10
-    rowTitle.anchorY = 1
+    local txtName = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
+    parentRow.objects.txtName = txtName
+    txtName:setFillColor(0, 0, 0)
+    txtName.anchorX = 0
+    txtName.x = posX
+    txtName.y = rowHeight - 10
+    txtName.anchorY = 1
 
-    local chipName = (42 * rowIdx) .. " Mh/sec"
-    local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor( 1, 1, 1 )
-    rowTitle.anchorX = 0
-    rowTitle.x = posX
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
+    local txtOutput = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
+    parentRow.objects.txtOutput = txtOutput
+    txtOutput:setFillColor(0, 0, 0)
+    txtOutput.anchorX = 0
+    txtOutput.x = posX
+    txtOutput.y = 10
+    txtOutput.anchorY = 0
 
-    local chipName = (60 * rowIdx) .. " W/sec"
-    local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor( 1, 1, 1 )
-    rowTitle.anchorX = 0
-    rowTitle.x = posX + 250
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
+    local txtConsumption = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
+    parentRow.objects.txtConsumption = txtConsumption
+    txtConsumption:setFillColor(0, 0, 0)
+    txtConsumption.anchorX = 0
+    txtConsumption.x = posX + 250
+    txtConsumption.y = 10
+    txtConsumption.anchorY = 0
 
     local rowTitle = display.newText({ parent = parentRow, text = "-", font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor( 1, 1, 1 )
+    rowTitle:setFillColor(0, 0, 0)
     rowTitle.anchorX = 0
     rowTitle.x = posX + 500
     rowTitle.y = 10
     rowTitle.anchorY = 0
 
-    local chipName = (50 * rowIdx) .. " pcs"
-    local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor( 1, 1, 1 )
-    rowTitle.anchorX = 0
-    rowTitle.x = posX + 600
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
+    local txtCount = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
+    parentRow.objects.txtCount = txtCount
+    txtCount:setFillColor(0, 0, 0)
+    txtCount.anchorX = 0
+    txtCount.x = posX + 600
+    txtCount.y = 10
+    txtCount.anchorY = 0
 
     local rowTitle = display.newText({ parent = parentRow, text = "+", font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor( 1, 1, 1 )
+    rowTitle:setFillColor(0, 0, 0)
     rowTitle.anchorX = 0
     rowTitle.x = posX + 800
     rowTitle.y = 10
     rowTitle.anchorY = 0
+
+    M.updateByState(scene, parentRow, parentRow.params.idx)
+end
+
+function M.updateByState(scene, row, chipIdx)
+    local gameState = scene.gameState
+
+    local chipInfo = config.chips[chipIdx]
+    local shopChipInfo = gameState:getShopChipInfo(chipIdx)
+
+    row.objects.icon.fill.frame = chipInfo.epoch
+    row.objects.txtName.text = chipInfo.name
+
+    ui_utils.updateTxt_count(row.objects.txtCount, shopChipInfo.count)
+
+    local hashes = shopChipInfo.count * chipInfo.output
+    ui_utils.updateTxt_Hsec(row.objects.txtOutput, hashes)
+
+    local watts = shopChipInfo.count * chipInfo.power_consumption
+    ui_utils.updateTxt_Wsec(row.objects.txtConsumption, watts)
 end
 
 return M
