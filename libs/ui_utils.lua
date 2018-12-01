@@ -20,4 +20,20 @@ function M.tableMouseScroller(rowHeight)
     end
 end
 
+function M.updateTxt_Wsec(txt, value)
+    M.updateTxtWithSiffix(txt, value, ' W/s')
+end
+
+function M.updateTxt_Hsec(txt, value)
+    M.updateTxtWithSiffix(txt, value, ' H/s')
+end
+
+function M.updateTxt_cost(txt, value)
+    M.updateTxtWithSiffix(txt, value, 'LC')
+end
+
+function M.updateTxtWithSiffix(txt, value, siffux)
+    txt.text = value .. siffux
+end
+
 return M

@@ -74,4 +74,12 @@ function M.sinCos(angleDeg)
     return M.sinCosDegTable[angleDeg]
 end
 
+function M.copyPlain(src)
+    local dst = {}
+    for k, v in pairs(src) do
+        dst[k] = v
+    end
+    return dst
+end
+
 return M

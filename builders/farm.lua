@@ -8,16 +8,22 @@ local mathRandom = math.random
 
 local M = {}
 
-function M.createRow(scene, farm, parentRow)
+function M.createRow(scene, parentRow)
     local rowHeight = parentRow.contentHeight
     local rowWidth = parentRow.contentWidth
     local rowIdx = parentRow.index
 
-    local bg = display.newRect(parentRow, 0, 0, rowWidth, rowHeight)
+    local bg0 = display.newRect(parentRow, 0, 0, rowWidth, rowHeight)
+    bg0.anchorX = 0
+    bg0.anchorY = 0
+    bg0:setFillColor(0, 0, 0)
+    parentRow:insert(bg0)
+
+    local bg = display.newRect(parentRow, 0, 0, rowWidth, rowHeight-4)
     parentRow.bg = bg
     bg.anchorX = 0
     bg.anchorY = 0
-    bg:setFillColor(mathRandom(1000) / 1000, mathRandom(1000) / 1000, mathRandom(1000) / 1000)
+    bg:setFillColor(0.8, 0.8, 0.8)
     parentRow:insert(bg)
 
     local posX = 5
@@ -39,7 +45,7 @@ function M.createRow(scene, farm, parentRow)
     local textHeight = 30
     local chipName = "Outel Kernel j" .. rowIdx
     local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor({ 1, 1, 1 })
+    rowTitle:setFillColor( 1, 1, 1 )
     rowTitle.anchorX = 0
     rowTitle.x = posX
     rowTitle.y = rowHeight - 10
@@ -47,7 +53,7 @@ function M.createRow(scene, farm, parentRow)
 
     local chipName = (42 * rowIdx) .. " Mh/sec"
     local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor({ 1, 1, 1 })
+    rowTitle:setFillColor( 1, 1, 1 )
     rowTitle.anchorX = 0
     rowTitle.x = posX
     rowTitle.y = 10
@@ -55,14 +61,14 @@ function M.createRow(scene, farm, parentRow)
 
     local chipName = (60 * rowIdx) .. " W/sec"
     local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor({ 1, 1, 1 })
+    rowTitle:setFillColor( 1, 1, 1 )
     rowTitle.anchorX = 0
     rowTitle.x = posX + 250
     rowTitle.y = 10
     rowTitle.anchorY = 0
 
     local rowTitle = display.newText({ parent = parentRow, text = "-", font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor({ 1, 1, 1 })
+    rowTitle:setFillColor( 1, 1, 1 )
     rowTitle.anchorX = 0
     rowTitle.x = posX + 500
     rowTitle.y = 10
@@ -70,14 +76,14 @@ function M.createRow(scene, farm, parentRow)
 
     local chipName = (50 * rowIdx) .. " pcs"
     local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor({ 1, 1, 1 })
+    rowTitle:setFillColor( 1, 1, 1 )
     rowTitle.anchorX = 0
     rowTitle.x = posX + 600
     rowTitle.y = 10
     rowTitle.anchorY = 0
 
     local rowTitle = display.newText({ parent = parentRow, text = "+", font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor({ 1, 1, 1 })
+    rowTitle:setFillColor( 1, 1, 1 )
     rowTitle.anchorX = 0
     rowTitle.x = posX + 800
     rowTitle.y = 10

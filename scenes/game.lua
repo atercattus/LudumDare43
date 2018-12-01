@@ -20,16 +20,11 @@ local tableMouseScroller = ui_utils.tableMouseScroller
 local farmBuilder = require("builders.farm")
 local shopBuilder = require("builders.shop")
 
+local newGameState = require("state").newGameState
+
 local scene = composer.newScene()
 
 -- ===========================================================================================
-
-scene:addEventListener("show", function(event)
-    if (event.phase == "will") then
-        scene:loadResources()
-        scene:setup()
-    end
-end)
 
 function scene:loadResources()
     self.chipsCount = 4
@@ -85,7 +80,7 @@ function scene:setupFarmTableAndTitle()
     local farmRowHeight = 100
 
     local function onFarmRowRender(event)
-        farmBuilder.createRow(scene, scene.objects.tblFarm, event.row)
+        farmBuilder.createRow(scene, event.row)
     end
 
     local tblFarm = widget.newTableView({
@@ -111,13 +106,13 @@ function scene:setupFarmTableAndTitle()
 
     self.view:insert(tblFarm)
     scene.objects.tblFarm = tblFarm
-    for i = 1, 20 do
-        tblFarm:insertRow({
-            rowHeight = 100,
-            rowColor = { 0, 0, 0, 1 },
-            lineColor = { 0, 0, 0, 1 },
-        })
-    end
+    --    for i = 1, 20 do
+    --        tblFarm:insertRow({
+    --            rowHeight = 100,
+    --            rowColor = { 0, 0, 0, 1 },
+    --            lineColor = { 0, 0, 0, 1 },
+    --        })
+    --    end
 
     local txtFarm = display.newText({ text = "Farm", width = W, font = fontName, fontSize = 40, align = 'left' })
     txtFarm:setFillColor(1, 1, 1)
@@ -144,7 +139,7 @@ function scene:setupShopTableAndTitle()
     local rowHeight = 100
 
     local function onRowRender(event)
-        shopBuilder.createRow(scene, scene.objects.tblShop, event.row)
+        shopBuilder.createRow(scene, event.row)
     end
 
     local tblShop = widget.newTableView({
@@ -169,14 +164,15 @@ function scene:setupShopTableAndTitle()
     tblShop:addEventListener("mouse", function(event) tblfarmScroller(event) end)
 
     self.view:insert(tblShop)
-    scene.objects.tblFarm = tblShop
-    for i = 1, 3 do
-        tblShop:insertRow({
-            rowHeight = 100,
-            rowColor = { 0, 0, 0, 1 },
-            lineColor = { 0, 0, 0, 1 },
-        })
-    end
+    scene.objects.tblShop = tblShop
+    scene:buildShop()
+    --    for i = 1, 3 do
+    --        tblShop:insertRow({
+    --            rowHeight = 100,
+    --            rowColor = { 0, 0, 0, 1 },
+    --            lineColor = { 0, 0, 0, 1 },
+    --        })
+    --    end
 
     local txtShop = display.newText({ text = "Shop", width = W, font = fontName, fontSize = 40, align = 'left' })
     txtShop:setFillColor(1, 1, 1)
@@ -188,7 +184,28 @@ function scene:setupShopTableAndTitle()
     scene.objects.txtShop = txtShop
 end
 
-scene:addEventListener("show", scene)
---scene:addEventListener("create", scene)
+function scene:buildShop()
+    local list = scene.gameState:getAllowedShopList()
+
+    for _, chip in pairs(list) do
+        scene.objects.tblShop:insertRow({
+            rowHeight = 100,
+            --rowColor = { 0, 0, 0, 1 },
+            --lineColor = { 0, 0, 0, 1 },
+            params = {
+                idx = chip.idx,
+            },
+        })
+    end
+end
+
+scene:addEventListener("show", function(event)
+    if (event.phase == "will") then
+        scene.gameState = newGameState()
+
+        scene:loadResources()
+        scene:setup()
+    end
+end)
 
 return scene
