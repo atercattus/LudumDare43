@@ -2,7 +2,7 @@ appScale = 1
 
 gameBuildVersion = "2018.12.01"
 
-gameName = 'IDN'
+gameName = 'LudumCoin'
 
 fontName = 'data/ErikaOrmig.ttf' -- https://www.1001fonts.com/erika-ormig-font.html
 
