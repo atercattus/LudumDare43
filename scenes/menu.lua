@@ -21,6 +21,8 @@ function scene:create(event)
     titleText.anchorY = 0
     titleText.x = W / 2
     titleText.y = 10
+
+    composer.gotoScene('scenes.game')
 end
 
 scene:addEventListener("create", scene)

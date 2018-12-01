@@ -12,6 +12,10 @@ function M.sqr(v)
     return v * v
 end
 
+function M.sign(v)
+    return v < 0 and -1 or 1
+end
+
 function M.vector(fromX, fromY, toX, toY)
     return { x = toX - fromX, y = toY - fromY }
 end
