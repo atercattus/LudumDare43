@@ -267,12 +267,23 @@ function scene:updateCounters()
     local shortInfo = self.gameState:processingTick((now - self.updateCountersDt) / 1000)
     self.updateCountersDt = now
 
-    -- ToDo: оптимизировать. Обновлять только тогда, когда нужно.
-    self:updateTxtOutput()
-    self:updateTxtCoins()
-    self:updateTxtExchange()
-    self:updateShop()
-    self:updateTxtElecBill()
+    if shortInfo.changedCoins then
+        self:updateTxtCoins()
+    end
+
+    if shortInfo.changedOutput then
+        self:updateTxtOutput()
+    end
+
+    if shortInfo.changedXchg then
+        self:updateTxtExchange()
+    end
+
+    if shortInfo.changedConsumptionCost then
+        self:updateTxtElecBill()
+    end
+
+    self:updateShop() -- ToDo: обновлять только тогда, когда нужно
 end
 
 scene:addEventListener("show", function(event)

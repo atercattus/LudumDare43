@@ -1,6 +1,7 @@
 local M = {}
 
 local ipairs = ipairs
+local floor = math.floor
 
 local copyPlain = require('libs.utils').copyPlain
 
@@ -85,7 +86,13 @@ function M.newGameState()
     end
 
     function state:processingTick(dt)
-        local shortInfo = {}
+        local shortInfo = {
+            changedCoins = false,
+            changedOutput = false,
+            changedXchg = false,
+            changedConsumption = false,
+            changedConsumptionCost = false, -- ToDo: self.consumptionCost
+        }
 
         local consumption = 0
         local output = 0
@@ -100,16 +107,18 @@ function M.newGameState()
         end
 
         if outputTotal >= self.xchg then
-            local add = math.floor(outputTotal / self.xchg)
+            local add = floor(outputTotal / self.xchg)
             outputTotal = outputTotal - add * self.xchg
             self.coins = self.coins + add
+            shortInfo.changedCoins = true
         end
 
         self.output = output
         self.outputTotal = outputTotal
-        self.consumption = consumption
+        shortInfo.changedOutput = output > 0
 
-        --ToDo: self.consumptionCost
+        self.consumption = consumption
+        shortInfo.changedConsumption = consumption > 0
 
         return shortInfo
     end
