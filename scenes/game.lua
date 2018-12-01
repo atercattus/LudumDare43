@@ -56,11 +56,11 @@ function scene:setup()
     self.view:insert(txtExchange)
     objects.txtExchange = txtExchange
 
-    local txtHashPerSec = display.newText({ text = '', width = W, font = fontName, fontSize = 32, align = 'center' })
+    local txtHashPerSec = display.newText({ text = '', width = W - 5, font = fontName, fontSize = 32, align = 'right' })
     txtHashPerSec:setFillColor(1, 1, 0.4)
     txtHashPerSec.anchorX = 0
     txtHashPerSec.anchorY = 0
-    txtHashPerSec.x = 0
+    txtHashPerSec.x = 1
     txtHashPerSec.y = 0
     self.view:insert(txtHashPerSec)
     objects.txtHashPerSec = txtHashPerSec
@@ -188,16 +188,14 @@ function scene:buildShop()
 end
 
 function scene:updateTxtCoins()
-    self.objects.txtCoins.text = 'LudumCoins: ' .. ui_utils.formatWithSiffix(self.gameState.coins)
+    local state = self.gameState
+    local xchg = ' (mining ' .. ui_utils.format_Hsec(state.xchg) .. ' for +1)'
+    self.objects.txtCoins.text = 'LudumCoins: ' .. ui_utils.formatWithSiffix(state.coins) .. xchg
 end
 
 function scene:updateTxtOutput()
     local state = self.gameState
-    self.objects.txtHashPerSec.text = ui_utils.format_Hsec(state.output)
-end
-
-function scene:updateTxtExchange()
-    self.objects.txtExchange.text = 'xchg: ' .. ui_utils.formatWithSiffix(self.gameState.xchg, 'h/LC')
+    self.objects.txtHashPerSec.text = ui_utils.format_H(state.outputTotal) .. ' (' .. ui_utils.format_Hsec(state.output) .. ')'
 end
 
 function scene:buy(idx)
@@ -271,7 +269,6 @@ scene:addEventListener("show", function(event)
         scene:setup()
         scene:updateTxtCoins()
         scene:updateTxtOutput()
-        scene:updateTxtExchange()
 
         scene.updateCountersDt = getTimer()
         timer.performWithDelay(500, function() scene:updateCounters() end, 0)

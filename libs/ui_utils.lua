@@ -36,6 +36,10 @@ function M.format_Hsec(value)
     return M.formatWithSiffix(value, ' h/s')
 end
 
+function M.format_H(value)
+    return M.formatWithSiffix(value, ' h')
+end
+
 function M.format_cost(value)
     return M.formatWithSiffix(value, 'LC')
 end
