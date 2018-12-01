@@ -44,7 +44,9 @@ function M.format_count(value)
     return M.formatWithSiffix(value, 'pcs')
 end
 
-function M.formatWithSiffix(value, suffix, prefix)
+function M.formatWithSiffix(value, suffix)
+    suffix = suffix or ''
+
     if value >= 1 then
         local pow = floor(log10(value) / 3)
 
@@ -61,7 +63,7 @@ function M.formatWithSiffix(value, suffix, prefix)
 
     value = (value < 100) and round(value, 2) or round(value, 0)
 
-    return (prefix or '') .. value .. suffix
+    return value .. suffix
 end
 
 return M

@@ -188,7 +188,7 @@ function scene:buildShop()
 end
 
 function scene:updateTxtCoins()
-    self.objects.txtCoins.text = ui_utils.formatWithSiffix(self.gameState.coins, '', 'LudumCoins: ')
+    self.objects.txtCoins.text = 'LudumCoins: ' .. ui_utils.formatWithSiffix(self.gameState.coins)
 end
 
 function scene:updateTxtOutput()
@@ -197,7 +197,7 @@ function scene:updateTxtOutput()
 end
 
 function scene:updateTxtExchange()
-    self.objects.txtExchange.text = ui_utils.formatWithSiffix(self.gameState.xchg, 'h/LC', 'xchg: ')
+    self.objects.txtExchange.text = 'xchg: ' .. ui_utils.formatWithSiffix(self.gameState.xchg, 'h/LC')
 end
 
 function scene:buy(idx)
