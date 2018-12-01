@@ -50,7 +50,7 @@ function M.updateTxtWithSiffix(txt, value, suffix, prefix)
             end
 
             local delim = 10 ^ (3 * pow)
-            value = round(value / delim, 0)
+            value = round(value / delim, 2)
             suffix = powers[pow] .. suffix
         end
     end
