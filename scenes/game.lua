@@ -259,6 +259,8 @@ function scene:updateCounters()
     self.updateCountersDt = now
 
     self:updateTxtOutput()
+    self:updateTxtCoins()
+    scene:updateShop()
 end
 
 scene:addEventListener("show", function(event)

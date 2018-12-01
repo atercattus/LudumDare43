@@ -11,8 +11,8 @@ M.chips = {
     {
         name = 'Outel Neptium 4',
         epoch = M.epoches.cpu,
-        cost = 10,
-        output = 1,
+        cost = 5,
+        output = 2,
         power_consumption = 65,
         --temperature = { max = 100 },
     },

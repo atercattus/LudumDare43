@@ -99,6 +99,12 @@ function M.newGameState()
             end
         end
 
+        if outputTotal >= self.xchg then
+            local add = math.floor(outputTotal / self.xchg)
+            outputTotal = outputTotal - add * self.xchg
+            self.coins = self.coins + add
+        end
+
         self.output = output
         self.outputTotal = outputTotal
         self.consumption = consumption
