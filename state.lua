@@ -109,6 +109,8 @@ function M.newGameState()
         self.outputTotal = outputTotal
         self.consumption = consumption
 
+        --ToDo: self.consumptionCost
+
         return shortInfo
     end
 

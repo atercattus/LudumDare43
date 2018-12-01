@@ -112,7 +112,7 @@ function scene:setupFarmTableAndTitle()
     self.view:insert(txtFarm)
     scene.objects.txtFarm = txtFarm
 
-    local txtElecBill = display.newText({ text = "Total 2000 W/sec: -0.1 LC/sec", width = W, font = fontName, fontSize = 28, align = 'right' })
+    local txtElecBill = display.newText({ text = '', width = W, font = fontName, fontSize = 28, align = 'right' })
     txtElecBill:setFillColor(0.8, 1, 1)
     txtElecBill.anchorX = 1
     txtElecBill.anchorY = 1
@@ -189,13 +189,18 @@ end
 
 function scene:updateTxtCoins()
     local state = self.gameState
-    local xchg = ' (mining ' .. ui_utils.format_Hsec(state.xchg) .. ' for +1)'
+    local xchg = ' (mining ' .. ui_utils.format_H(state.xchg) .. ' for +1)'
     self.objects.txtCoins.text = 'LudumCoins: ' .. ui_utils.formatWithSiffix(state.coins) .. xchg
 end
 
 function scene:updateTxtOutput()
     local state = self.gameState
     self.objects.txtHashPerSec.text = ui_utils.format_H(state.outputTotal) .. ' (' .. ui_utils.format_Hsec(state.output) .. ')'
+end
+
+function scene:updateTxtElecBill()
+    local state = self.gameState
+    self.objects.txtElecBill.text = 'Total ' .. ui_utils.format_Wsec(state.consumption) .. ': -' .. ui_utils.format_LCsec(state.consumptionCost)
 end
 
 function scene:buy(idx)
@@ -258,9 +263,11 @@ function scene:updateCounters()
     local shortInfo = self.gameState:processingTick((now - self.updateCountersDt) / 1000)
     self.updateCountersDt = now
 
+    -- ToDo: оптимизировать. Обновлять только тогда, когда нужно.
     self:updateTxtOutput()
     self:updateTxtCoins()
-    scene:updateShop()
+    self:updateShop()
+    self:updateTxtElecBill()
 end
 
 scene:addEventListener("show", function(event)
@@ -269,11 +276,12 @@ scene:addEventListener("show", function(event)
 
         scene:loadResources()
         scene:setup()
-        scene:updateTxtCoins()
         scene:updateTxtOutput()
+        scene:updateTxtCoins()
+        scene:updateTxtElecBill()
 
         scene.updateCountersDt = getTimer()
-        timer.performWithDelay(500, function() scene:updateCounters() end, 0)
+        timer.performWithDelay(250, function() scene:updateCounters() end, 0)
     end
 end)
 

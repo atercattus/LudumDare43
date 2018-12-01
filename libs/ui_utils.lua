@@ -41,15 +41,20 @@ function M.format_H(value)
 end
 
 function M.format_cost(value)
-    return M.formatWithSiffix(value, 'LC')
+    return M.formatWithSiffix(value, ' LC')
+end
+
+function M.format_LCsec(value)
+    return M.formatWithSiffix(value, ' LC/s', 4)
 end
 
 function M.format_count(value)
-    return M.formatWithSiffix(value, 'pcs')
+    return M.formatWithSiffix(value, ' pcs')
 end
 
-function M.formatWithSiffix(value, suffix)
+function M.formatWithSiffix(value, suffix, precision)
     suffix = suffix or ''
+    precision = precision or 2
 
     if value >= 1 then
         local pow = floor(log10(value) / 3)
@@ -65,7 +70,7 @@ function M.formatWithSiffix(value, suffix)
         end
     end
 
-    value = (value < 100) and round(value, 2) or round(value, 0)
+    value = (value < 100) and round(value, precision) or round(value, 0)
 
     return value .. suffix
 end
