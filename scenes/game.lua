@@ -188,16 +188,16 @@ function scene:buildShop()
 end
 
 function scene:updateTxtCoins()
-    ui_utils.updateTxtWithSiffix(self.objects.txtCoins, self.gameState.coins, '', 'LudumCoins: ')
+    self.objects.txtCoins.text = ui_utils.formatWithSiffix(self.gameState.coins, '', 'LudumCoins: ')
 end
 
 function scene:updateTxtOutput()
     local state = self.gameState
-    ui_utils.updateTxt_Hsec(self.objects.txtHashPerSec, state.output)
+    self.objects.txtHashPerSec.text = ui_utils.format_Hsec(state.output)
 end
 
 function scene:updateTxtExchange()
-    ui_utils.updateTxtWithSiffix(self.objects.txtExchange, self.gameState.xchg, 'h/LC', 'xchg: ')
+    self.objects.txtExchange.text = ui_utils.formatWithSiffix(self.gameState.xchg, 'h/LC', 'xchg: ')
 end
 
 function scene:buy(idx)

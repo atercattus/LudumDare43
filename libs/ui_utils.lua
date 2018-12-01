@@ -28,23 +28,23 @@ function M.tableMouseScroller(rowHeight)
     end
 end
 
-function M.updateTxt_Wsec(txt, value)
-    M.updateTxtWithSiffix(txt, value, ' W/s')
+function M.format_Wsec(value)
+    return M.formatWithSiffix(value, ' W/s')
 end
 
-function M.updateTxt_Hsec(txt, value)
-    M.updateTxtWithSiffix(txt, value, ' h/s')
+function M.format_Hsec(value)
+    return M.formatWithSiffix(value, ' h/s')
 end
 
-function M.updateTxt_cost(txt, value)
-    M.updateTxtWithSiffix(txt, value, 'LC')
+function M.format_cost(value)
+    return M.formatWithSiffix(value, 'LC')
 end
 
-function M.updateTxt_count(txt, value)
-    M.updateTxtWithSiffix(txt, value, 'pcs')
+function M.format_count(value)
+    return M.formatWithSiffix(value, 'pcs')
 end
 
-function M.updateTxtWithSiffix(txt, value, suffix, prefix)
+function M.formatWithSiffix(value, suffix, prefix)
     if value >= 1 then
         local pow = floor(log10(value) / 3)
 
@@ -61,7 +61,7 @@ function M.updateTxtWithSiffix(txt, value, suffix, prefix)
 
     value = (value < 100) and round(value, 2) or round(value, 0)
 
-    txt.text = (prefix or '') .. value .. suffix
+    return (prefix or '') .. value .. suffix
 end
 
 return M

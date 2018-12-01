@@ -105,9 +105,9 @@ function M.updateByState(scene, row)
     row.objects.icon.fill.frame = chipInfo.epoch
 
     row.objects.txtName.text = chipInfo.name
-    ui_utils.updateTxt_Hsec(row.objects.txtOutput, chipInfo.output)
-    ui_utils.updateTxt_Wsec(row.objects.txtConsumption, chipInfo.power_consumption)
-    ui_utils.updateTxt_cost(row.objects.txtCost, chipInfo.cost)
+    row.objects.txtOutput.text = ui_utils.format_Hsec(chipInfo.output)
+    row.objects.txtConsumption.text = ui_utils.format_Wsec(chipInfo.power_consumption)
+    row.objects.txtCost.text = ui_utils.format_cost(chipInfo.cost)
 
     local isMoneyEnough = gameState.coins >= chipInfo.cost
 

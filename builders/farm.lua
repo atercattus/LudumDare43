@@ -105,13 +105,13 @@ function M.updateByState(scene, row)
     row.objects.icon.fill.frame = chipInfo.epoch
     row.objects.txtName.text = chipInfo.name
 
-    ui_utils.updateTxt_count(row.objects.txtCount, shopChipInfo.count)
+    row.objects.txtCount.text = ui_utils.format_count(shopChipInfo.count)
 
     local hashes = shopChipInfo.count * chipInfo.output
-    ui_utils.updateTxt_Hsec(row.objects.txtOutput, hashes)
+    row.objects.txtOutput.text = ui_utils.format_Hsec(hashes)
 
     local watts = shopChipInfo.count * chipInfo.power_consumption
-    ui_utils.updateTxt_Wsec(row.objects.txtConsumption, watts)
+    row.objects.txtConsumption.text = ui_utils.format_Wsec(watts)
 end
 
 return M
