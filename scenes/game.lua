@@ -51,12 +51,12 @@ function scene:setup()
     txtCoins:setFillColor(1, 1, 0.4)
     txtCoins.anchorX = 0
     txtCoins.anchorY = 0
-    txtCoins.x = 0
+    txtCoins.x = 5
     txtCoins.y = 0
     self.view:insert(txtCoins)
     objects.txtCoins = txtCoins
 
-    local txtExchange = display.newText({ text = "Xchg: 47 Mh/LC", width = W, font = fontName, fontSize = 32, align = 'right' })
+    local txtExchange = display.newText({ text = "Xchg: 47 Mh/LC", width = W - 5, font = fontName, fontSize = 32, align = 'right' })
     txtExchange:setFillColor(1, 1, 0.4)
     txtExchange.anchorX = 0
     txtExchange.anchorY = 0
@@ -81,23 +81,12 @@ end
 function scene:setupFarmTableAndTitle()
     local W, H = display.contentWidth, display.contentHeight
 
-    local txtFarm = display.newText({ text = "Farm:", width = W, font = fontName, fontSize = 40, align = 'left' })
-    txtFarm:setFillColor(1, 1, 1)
-    txtFarm.anchorX = 0
-    txtFarm.anchorY = 0
-    txtFarm.x = 0
-    txtFarm.y = 50
-    self.view:insert(txtFarm)
-    scene.objects.txtFarm = txtFarm
-
     local farmPercentWidth = 60
     local farmRowHeight = 100
 
     local function onFarmRowRender(event)
         farmBuilder.createRow(scene, scene.objects.tblFarm, event.row)
     end
-
-    --Runtime:addEventListener("mouse", function(event) scene:onMouseEvent(event) end)
 
     local tblFarm = widget.newTableView({
         width = W * (farmPercentWidth / 100),
@@ -110,9 +99,8 @@ function scene:setupFarmTableAndTitle()
     tblFarm.anchorX = 0
     tblFarm.anchorY = 0
     tblFarm.noLines = true
-    --tblFarm.hideBackground = true
 
-    local bg = display.newRect(tblFarm, 0, -tblFarm.height/2, tblFarm.width, tblFarm.height)
+    local bg = display.newRect(tblFarm, 0, -tblFarm.height / 2, tblFarm.width, tblFarm.height)
     bg.anchorX = 0
     bg.anchorY = 0
     bg:setFillColor(0.3, 0.3, 0.3)
@@ -131,21 +119,28 @@ function scene:setupFarmTableAndTitle()
         })
     end
 
+    local txtFarm = display.newText({ text = "Farm", width = W, font = fontName, fontSize = 40, align = 'left' })
+    txtFarm:setFillColor(1, 1, 1)
+    txtFarm.anchorX = 0
+    txtFarm.anchorY = 0
+    txtFarm.x = 10
+    txtFarm.y = 50
+    self.view:insert(txtFarm)
+    scene.objects.txtFarm = txtFarm
+
+    local txtElecBill = display.newText({ text = "Total 2000 W/sec: -0.1 LC/sec", width = W, font = fontName, fontSize = 28, align = 'right' })
+    txtElecBill:setFillColor(0.8, 1, 1)
+    txtElecBill.anchorX = 1
+    txtElecBill.anchorY = 1
+    txtElecBill.x = tblFarm.contentBounds.xMax
+    txtElecBill.y = tblFarm.contentBounds.yMin - 5
+    self.view:insert(txtElecBill)
+    scene.objects.txtElecBill = txtElecBill
 end
 
 function scene:setupShopTableAndTitle()
     local W, H = display.contentWidth, display.contentHeight
 
-    local txtShop = display.newText({ text = "PU Shop:", width = W, font = fontName, fontSize = 40, align = 'left' })
-    txtShop:setFillColor(1, 1, 1)
-    txtShop.anchorX = 0
-    txtShop.anchorY = 0
-    txtShop.x = scene.objects.tblFarm.contentBounds.xMax+10
-    txtShop.y = 50
-    self.view:insert(txtShop)
-    scene.objects.txtShop = txtShop
-
---    local farmPercentWidth = 60
     local rowHeight = 100
 
     local function onRowRender(event)
@@ -153,18 +148,18 @@ function scene:setupShopTableAndTitle()
     end
 
     local tblShop = widget.newTableView({
-        width = W - scene.objects.tblFarm.width-25,
+        width = W - scene.objects.tblFarm.width - 25,
         height = H - rowHeight - 5,
         isBounceEnabled = false,
         onRowRender = onRowRender,
     })
-    tblShop.x = txtShop.x+5
+    tblShop.x = scene.objects.tblFarm.contentBounds.xMax + 15
     tblShop.y = 100
     tblShop.anchorX = 0
     tblShop.anchorY = 0
     tblShop.noLines = true
 
-    local bg = display.newRect(tblShop, 0, -tblShop.height/2, tblShop.width, tblShop.height)
+    local bg = display.newRect(tblShop, 0, -tblShop.height / 2, tblShop.width, tblShop.height)
     bg.anchorX = 0
     bg.anchorY = 0
     bg:setFillColor(0.3, 0.3, 0.3)
@@ -183,6 +178,14 @@ function scene:setupShopTableAndTitle()
         })
     end
 
+    local txtShop = display.newText({ text = "Shop", width = W, font = fontName, fontSize = 40, align = 'left' })
+    txtShop:setFillColor(1, 1, 1)
+    txtShop.anchorX = 0
+    txtShop.anchorY = 0
+    txtShop.x = tblShop.x + 10
+    txtShop.y = 50
+    self.view:insert(txtShop)
+    scene.objects.txtShop = txtShop
 end
 
 scene:addEventListener("show", scene)

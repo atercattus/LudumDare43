@@ -9,7 +9,6 @@ local mathRandom = math.random
 local M = {}
 
 function M.createRow(scene, farm, parentRow)
-    -- Cache the row "contentWidth" and "contentHeight" because the row bounds can change as children objects are added
     local rowHeight = parentRow.contentHeight
     local rowWidth = parentRow.contentWidth
     local rowIdx = parentRow.index
@@ -18,7 +17,7 @@ function M.createRow(scene, farm, parentRow)
     parentRow.bg = bg
     bg.anchorX = 0
     bg.anchorY = 0
-    bg:setFillColor(mathRandom(1000)/1000, mathRandom(1000)/1000, mathRandom(1000)/1000)
+    bg:setFillColor(mathRandom(1000) / 1000, mathRandom(1000) / 1000, mathRandom(1000) / 1000)
     parentRow:insert(bg)
 
     local posX = 5
@@ -32,7 +31,7 @@ function M.createRow(scene, farm, parentRow)
     end
     icon.fill = { type = "image", sheet = scene.chipsImageSheet, frame = chipIdx }
     icon.x = posX
-    icon.y = 5 + rowHeight/2
+    icon.y = 5 + rowHeight / 2
     icon.anchorX = 0
     icon.anchorY = 0.5
     posX = posX + iconSize + 10
@@ -43,11 +42,10 @@ function M.createRow(scene, farm, parentRow)
     rowTitle:setFillColor({ 1, 1, 1 })
     rowTitle.anchorX = 0
     rowTitle.x = posX
-    rowTitle.y = rowHeight-10
+    rowTitle.y = rowHeight - 10
     rowTitle.anchorY = 1
 
-    --local textHeight = 30
-    local chipName = (42*rowIdx) .. " Mh/sec"
+    local chipName = (42 * rowIdx) .. " Mh/sec"
     local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
     rowTitle:setFillColor({ 1, 1, 1 })
     rowTitle.anchorX = 0
@@ -55,18 +53,18 @@ function M.createRow(scene, farm, parentRow)
     rowTitle.y = 10
     rowTitle.anchorY = 0
 
-    local chipName = (60*rowIdx) .. " W/sec"
+    local chipName = (60 * rowIdx) .. " W/sec"
     local rowTitle = display.newText({ parent = parentRow, text = chipName, font = fontName, fontSize = textHeight, align = 'left' })
     rowTitle:setFillColor({ 1, 1, 1 })
     rowTitle.anchorX = 0
-    rowTitle.x = posX+250
+    rowTitle.x = posX + 250
     rowTitle.y = 10
     rowTitle.anchorY = 0
 
     local rowTitle = display.newText({ parent = parentRow, text = "BUY", font = fontName, fontSize = textHeight, align = 'left' })
     rowTitle:setFillColor({ 1, 1, 1 })
     rowTitle.anchorX = 0
-    rowTitle.x = rowWidth-10
+    rowTitle.x = rowWidth - 10
     rowTitle.y = 10
     rowTitle.anchorY = 0
     rowTitle.anchorX = 1
