@@ -47,7 +47,7 @@ function scene:setup()
     self.view:insert(txtCoins)
     objects.txtCoins = txtCoins
 
-    local txtExchange = display.newText({ text = '', width = W - 5, font = fontName, fontSize = 32, align = 'right' })
+    local txtExchange = display.newText({ text = '', width = W, font = fontName, fontSize = 32, align = 'center' })
     txtExchange:setFillColor(1, 1, 0.4)
     txtExchange.anchorX = 0
     txtExchange.anchorY = 0
@@ -189,8 +189,12 @@ end
 
 function scene:updateTxtCoins()
     local state = self.gameState
-    local xchg = ' (mining ' .. ui_utils.format_H(state.xchg) .. ' for +1)'
-    self.objects.txtCoins.text = 'LudumCoins: ' .. ui_utils.formatWithSiffix(state.coins) .. xchg
+    self.objects.txtCoins.text = 'LudumCoins: ' .. ui_utils.formatWithSiffix(state.coins)
+end
+
+function scene:updateTxtExchange()
+    local state = self.gameState
+    self.objects.txtExchange.text = '(mining ' .. ui_utils.format_H(state.xchg) .. ' for +1 LC)'
 end
 
 function scene:updateTxtOutput()
@@ -266,6 +270,7 @@ function scene:updateCounters()
     -- ToDo: оптимизировать. Обновлять только тогда, когда нужно.
     self:updateTxtOutput()
     self:updateTxtCoins()
+    self:updateTxtExchange()
     self:updateShop()
     self:updateTxtElecBill()
 end
@@ -278,6 +283,7 @@ scene:addEventListener("show", function(event)
         scene:setup()
         scene:updateTxtOutput()
         scene:updateTxtCoins()
+        scene:updateTxtExchange()
         scene:updateTxtElecBill()
 
         scene.updateCountersDt = getTimer()
