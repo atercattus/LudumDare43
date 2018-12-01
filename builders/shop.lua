@@ -5,8 +5,6 @@ local require = require
 local math = math
 local unpack = unpack
 
-local mathRandom = math.random
-
 local config = require("data.config")
 --local epoches = config.epoches
 --local chips = config.chips
@@ -29,12 +27,11 @@ function M.createRow(scene, parentRow)
     parentRow:insert(bg0)
 
     local bg = display.newRect(parentRow, 0, 0, rowWidth, rowHeight - 4)
-    parentRow.bg = bg
+    parentRow:insert(bg)
     parentRow.objects.bg = bg
     bg.anchorX = 0
     bg.anchorY = 0
     bg:setFillColor(0.8, 0.8, 0.7)
-    parentRow:insert(bg)
 
     local posX = 5
 
@@ -55,47 +52,47 @@ function M.createRow(scene, parentRow)
 
     local textHeight = 30
     --local chipName = "Outel Kernel j" .. rowIdx
-    local rowTitle = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
-    parentRow.objects.txtName = rowTitle
-    rowTitle:setFillColor(0, 0, 0)
-    rowTitle.anchorX = 0
-    rowTitle.x = posX
-    rowTitle.y = rowHeight - 10
-    rowTitle.anchorY = 1
+    local txtName = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
+    parentRow.objects.txtName = txtName
+    txtName:setFillColor(0, 0, 0)
+    txtName.anchorX = 0
+    txtName.x = posX
+    txtName.y = rowHeight - 10
+    txtName.anchorY = 1
 
-    local rowTitle = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
-    parentRow.objects.txtOutput = rowTitle
-    rowTitle:setFillColor(0, 0, 0)
-    rowTitle.anchorX = 0
-    rowTitle.x = posX
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
+    local txtOutput = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
+    parentRow.objects.txtOutput = txtOutput
+    txtOutput:setFillColor(0, 0, 0)
+    txtOutput.anchorX = 0
+    txtOutput.x = posX
+    txtOutput.y = 10
+    txtOutput.anchorY = 0
 
-    local rowTitle = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
-    parentRow.objects.txtConsumption = rowTitle
-    rowTitle:setFillColor(0, 0, 0)
-    rowTitle.anchorX = 0
-    rowTitle.x = posX + 250
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
+    local txtConsumption = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
+    parentRow.objects.txtConsumption = txtConsumption
+    txtConsumption:setFillColor(0, 0, 0)
+    txtConsumption.anchorX = 0
+    txtConsumption.x = posX + 250
+    txtConsumption.y = 10
+    txtConsumption.anchorY = 0
 
-    local rowTitle = display.newText({ parent = parentRow, text = 'BUY', font = fontName, fontSize = textHeight, align = 'left' })
-    parentRow.objects.txtBuy = rowTitle
-    rowTitle:setFillColor(0, 0, 0)
-    rowTitle.anchorX = 0
-    rowTitle.x = rowWidth - 10
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
-    rowTitle.anchorX = 1
+    local txtBuy = display.newText({ parent = parentRow, text = 'BUY', font = fontName, fontSize = textHeight, align = 'left' })
+    parentRow.objects.txtBuy = txtBuy
+    txtBuy:setFillColor(0, 0, 0)
+    txtBuy.anchorX = 0
+    txtBuy.x = rowWidth - 10
+    txtBuy.y = 10
+    txtBuy.anchorY = 0
+    txtBuy.anchorX = 1
 
-    local rowTitle = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
-    parentRow.objects.txtCost = rowTitle
-    rowTitle:setFillColor(0, 0, 0)
-    rowTitle.anchorX = 0
-    rowTitle.x = rowWidth - 10
-    rowTitle.anchorX = 1
-    rowTitle.anchorY = 1
-    rowTitle.y = rowHeight - 10
+    local txtCost = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
+    parentRow.objects.txtCost = txtCost
+    txtCost:setFillColor(0, 0, 0)
+    txtCost.anchorX = 0
+    txtCost.x = rowWidth - 10
+    txtCost.anchorX = 1
+    txtCost.anchorY = 1
+    txtCost.y = rowHeight - 10
 
     local chipInfo = config.chips[parentRow.params.idx]
 
