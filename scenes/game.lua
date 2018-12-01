@@ -1,21 +1,15 @@
---local gameName = gameName
 local fontName = fontName
 
 local display = display
 local require = require
-local math = math
+local ipairs = ipairs
 
 local composer = require("composer")
 local graphics = require("graphics")
 local widget = require("widget")
 
-local mathRandom = math.random
-
 local ui_utils = require("libs.ui_utils")
 local tableMouseScroller = ui_utils.tableMouseScroller
-
---local utils = require("libs.utils")
---local mathSign = utils.sign
 
 local farmBuilder = require("builders.farm")
 local shopBuilder = require("builders.shop")
@@ -106,13 +100,6 @@ function scene:setupFarmTableAndTitle()
 
     self.view:insert(tblFarm)
     scene.objects.tblFarm = tblFarm
-    --    for i = 1, 20 do
-    --        tblFarm:insertRow({
-    --            rowHeight = 100,
-    --            rowColor = { 0, 0, 0, 1 },
-    --            lineColor = { 0, 0, 0, 1 },
-    --        })
-    --    end
 
     local txtFarm = display.newText({ text = "Farm", width = W, font = fontName, fontSize = 40, align = 'left' })
     txtFarm:setFillColor(1, 1, 1)
@@ -174,13 +161,6 @@ function scene:setupShopTableAndTitle()
     self.view:insert(tblShop)
     scene.objects.tblShop = tblShop
     scene:buildShop()
-    --    for i = 1, 3 do
-    --        tblShop:insertRow({
-    --            rowHeight = 100,
-    --            rowColor = { 0, 0, 0, 1 },
-    --            lineColor = { 0, 0, 0, 1 },
-    --        })
-    --    end
 
     local txtShop = display.newText({ text = "Shop", width = W, font = fontName, fontSize = 40, align = 'left' })
     txtShop:setFillColor(1, 1, 1)
@@ -228,7 +208,7 @@ function scene:buy(idx)
         -- удалось
         self:updateTxtCoins()
         self:updateFarm()
-        -- ToDo: обновить доступность магазина
+        self:updateShop()
     else
         -- не удалось
     end
@@ -249,7 +229,7 @@ function scene:updateFarm()
         if tblRowIdx ~= nil then
             -- такая строка уже есть, нужно пересчитать
             local tblFarmRow = tblFarm:getRowAtIndex(tblRowIdx)
-            farmBuilder.updateByState(self, tblFarmRow, chips.idx)
+            farmBuilder.updateByState(self, tblFarmRow)
         else
             -- появилась новая строка
             self.objects.tblFarm:insertRow({
@@ -262,6 +242,14 @@ function scene:updateFarm()
     end
 
     -- ToDo: удаление строк
+end
+
+function scene:updateShop()
+    local tblShop = self.objects.tblShop
+    for i = 1, tblShop:getNumRows() do
+        local row = tblShop:getRowAtIndex(i)
+        shopBuilder.updateByState(self, row)
+    end
 end
 
 scene:addEventListener("show", function(event)

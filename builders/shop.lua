@@ -51,7 +51,6 @@ function M.createRow(scene, parentRow)
     posX = posX + iconSize + 10
 
     local textHeight = 30
-    --local chipName = "Outel Kernel j" .. rowIdx
     local txtName = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
     parentRow.objects.txtName = txtName
     txtName:setFillColor(0, 0, 0)
@@ -60,7 +59,7 @@ function M.createRow(scene, parentRow)
     txtName.y = rowHeight - 10
     txtName.anchorY = 1
 
-    local txtOutput = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
+    local txtOutput = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight + 4, align = 'left' })
     parentRow.objects.txtOutput = txtOutput
     txtOutput:setFillColor(0, 0, 0)
     txtOutput.anchorX = 0
@@ -68,7 +67,7 @@ function M.createRow(scene, parentRow)
     txtOutput.y = 10
     txtOutput.anchorY = 0
 
-    local txtConsumption = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
+    local txtConsumption = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight + 4, align = 'left' })
     parentRow.objects.txtConsumption = txtConsumption
     txtConsumption:setFillColor(0, 0, 0)
     txtConsumption.anchorX = 0
@@ -85,7 +84,7 @@ function M.createRow(scene, parentRow)
     txtBuy.anchorY = 0
     txtBuy.anchorX = 1
 
-    local txtCost = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight+4, align = 'left' })
+    local txtCost = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight + 4, align = 'left' })
     parentRow.objects.txtCost = txtCost
     txtCost:setFillColor(0, 0, 0)
     txtCost.anchorX = 0
@@ -94,12 +93,13 @@ function M.createRow(scene, parentRow)
     txtCost.anchorY = 1
     txtCost.y = rowHeight - 10
 
-    M.updateByState(scene, parentRow, parentRow.params.idx)
+    M.updateByState(scene, parentRow)
 end
 
-function M.updateByState(scene, row, chipIdx)
+function M.updateByState(scene, row)
     local gameState = scene.gameState
 
+    local chipIdx = row.params.idx
     local chipInfo = config.chips[chipIdx]
 
     row.objects.icon.fill.frame = chipInfo.epoch

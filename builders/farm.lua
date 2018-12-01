@@ -92,12 +92,13 @@ function M.createRow(scene, parentRow)
     rowTitle.y = 10
     rowTitle.anchorY = 0
 
-    M.updateByState(scene, parentRow, parentRow.params.idx)
+    M.updateByState(scene, parentRow)
 end
 
-function M.updateByState(scene, row, chipIdx)
+function M.updateByState(scene, row)
     local gameState = scene.gameState
 
+    local chipIdx = row.params.idx
     local chipInfo = config.chips[chipIdx]
     local shopChipInfo = gameState:getShopChipInfo(chipIdx)
 
