@@ -1,6 +1,6 @@
 local M = {}
 
-M.epoches = { -- Порядок должен совпадать с chipsImageSheet
+M.epoches = { -- РџРѕСЂСЏРґРѕРє РґРѕР»Р¶РµРЅ СЃРѕРІРїР°РґР°С‚СЊ СЃ chipsImageSheet
     cpu = 1,
     gpu = 2,
     asic = 3,
