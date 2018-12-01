@@ -22,7 +22,12 @@ function scene:create(event)
     titleText.x = W / 2
     titleText.y = 10
 
-    composer.gotoScene('scenes.game')
+    titleText:addEventListener("touch", function(event)
+        if event.phase == 'began' then
+            composer.gotoScene('scenes.game')
+        end
+        return true
+    end)
 end
 
 scene:addEventListener("create", scene)
