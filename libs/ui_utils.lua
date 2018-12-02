@@ -45,7 +45,7 @@ function M.format_cost(value)
 end
 
 function M.format_LCsec(value)
-    return M.formatWithSiffix(value, ' LC/s')
+    return M.formatWithSiffix(value, ' LC/s', 6)
 end
 
 function M.format_count(value)
