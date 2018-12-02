@@ -190,7 +190,11 @@ function M.updateByState(scene, row)
         local turboWidth = perc * row.objects.turboPanelBg.width
         if abs(turboWidth - row.objects.turboPanel.width) >= 1 then
             row.objects.turboPanel.width = turboWidth
-            row.objects.turboPanel:setFillColor(perc, 1 - perc, 0.2)
+            if perc <= gameState.overheatPercentage / 100 then
+                row.objects.turboPanel:setFillColor(0, 1, 0.2)
+            else
+                row.objects.turboPanel:setFillColor(perc, 1 - perc, 0.2)
+            end
         end
     elseif (row.objects.turboIcon.fill.frame == 2) then
         -- Turbo закончился

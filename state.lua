@@ -4,6 +4,7 @@ local ipairs = ipairs
 local floor = math.floor
 local tableRemove = table.remove
 local mathRandom = math.random
+local mathRound = math.round
 
 local copyPlain = require('libs.utils').copyPlain
 
@@ -30,6 +31,9 @@ function M.newGameState()
         outputTotal = 0.0, -- Выработка в hash/sec с момента прошлой покупки LC
         consumption = 0, -- Текущее потребление в W/sec
         consumptionCost = 0.0, -- Стоимость текущего потребления в LC/sec
+
+        -- Статичные
+        overheatPercentage = 60, -- С этого уровня начинается перегрев
     }
 
     function state:getAllowedShopList()
@@ -217,7 +221,7 @@ function M.newGameState()
             delta = 5
         elseif boost >= 80 then
             delta = 2
-        elseif boost >= 60 then
+        elseif boost >= self.overheatPercentage then
             delta = 1
         else
             -- Пусть чипы остывают супер быстро :)
@@ -234,7 +238,7 @@ function M.newGameState()
         if chips.overheat > 20 then
             local ev = mathRandom(0, 2000) < chips.overheat
             if ev then
-                local cnt = math.round(chips.count * 0.01, 0)
+                local cnt = mathRound(chips.count * 0.01, 0)
                 if cnt == 0 then
                     cnt = 1
                 end
