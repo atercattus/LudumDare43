@@ -42,9 +42,21 @@ function M.newGameState()
 
         local epoch = self.epoch
 
-        for i, chip in ipairs(chipsConfig) do
-            if (chip.epoch <= epoch) and ((chip.cost <= self.maximumCoins) or (i == 1)) then
-                list[#list + 1] = copyPlain(chip)
+        local firstUnavailable = true
+        for _, chip in ipairs(chipsConfig) do
+            if chip.epoch > epoch then
+                -- skip
+            else
+                local allowAdd = chip.cost <= self.maximumCoins
+
+                if (not allowAdd) and firstUnavailable then
+                    firstUnavailable = false
+                    allowAdd = true
+                end
+
+                if allowAdd then
+                    list[#list + 1] = copyPlain(chip)
+                end
             end
         end
 
