@@ -26,12 +26,24 @@ local scene = composer.newScene()
 
 -- ===========================================================================================
 
+function scene:getChipFrame(chipIdx)
+    if chipIdx <= 9 then -- CPU
+        return chipIdx
+    elseif chipIdx < 19 then -- GPU
+        return chipIdx + 1 * (-9 + 16)
+    else -- ASIC
+        return chipIdx + 2 * (-9 + 16)
+    end
+
+    return chipIdx
+end
+
 function scene:loadResources()
-    self.chipsCount = 4
+    --self.chipsCount = 16*4
     local options = {
         width = 64,
         height = 64,
-        numFrames = self.chipsCount,
+        numFrames = 16 * 4,
     }
     self.chipsImageSheet = graphics.newImageSheet("data/chips.png", options)
 
@@ -92,8 +104,8 @@ function scene:setup()
     txtLooser:setFillColor(1, 0.2, 0.2)
     txtLooser.anchorX = 0.5
     txtLooser.anchorY = 0.5
-    txtLooser.x = W/2
-    txtLooser.y = H/2
+    txtLooser.x = W / 2
+    txtLooser.y = H / 2
     self.view:insert(txtLooser)
     objects.txtLooser = txtLooser
     txtLooser.isVisible = false
@@ -273,7 +285,8 @@ function scene:setupShopTableAndTitle_chipTypeTabs()
         iconBg.anchorY = 0
 
         local icon = display.newRect(0, 0, iconSize, iconSize)
-        icon.fill = { type = "image", sheet = self.chipsImageSheet, frame = chipTypeIdx }
+        local fidx = { [configEpoches.cpu] = 1, [configEpoches.gpu] = 10, [configEpoches.asic] = 19 }
+        icon.fill = { type = "image", sheet = self.chipsImageSheet, frame = self:getChipFrame(fidx[chipTypeIdx]) }
         icon.x = iconBg.x + 2
         icon.y = iconBg.y + 2
         icon.anchorX = 0

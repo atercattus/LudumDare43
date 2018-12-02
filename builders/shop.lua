@@ -36,11 +36,7 @@ function M.createRow(scene, parentRow)
     local icon = display.newRect(0, 0, iconSize, iconSize)
     parentRow:insert(icon)
     parentRow.objects.icon = icon
-    local chipIdx = rowIdx
-    if chipIdx > 3 then
-        chipIdx = (chipIdx % 3) + 1
-    end
-    icon.fill = { type = "image", sheet = scene.chipsImageSheet, frame = chipIdx }
+    icon.fill = { type = "image", sheet = scene.chipsImageSheet, frame = 1 }
     icon.x = posX
     icon.y = 5 + rowHeight / 2
     icon.anchorX = 0
@@ -100,7 +96,7 @@ function M.updateByState(scene, row)
     local chipIdx = row.params.idx
     local chipInfo = config.chips[chipIdx]
 
-    row.objects.icon.fill.frame = chipInfo.epoch
+    row.objects.icon.fill.frame = scene:getChipFrame(chipIdx)
 
     row.objects.txtName.text = chipInfo.name
     row.objects.txtOutput.text = ui_utils.format_Hsec(chipInfo.output * buyMult)

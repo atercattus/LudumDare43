@@ -1,7 +1,7 @@
 local M = {}
 
 M.epoches = {
-    -- Порядок должен совпадать с chipsImageSheet
+    -- Порядок должен совпадать с chipsImageSheet (с учетом scene:getChipFrame)
     cpu = 1,
     gpu = 2,
     asic = 3,
@@ -36,7 +36,16 @@ M.chips = {
     { epoch = M.epoches.gpu, cost = 200 * 1000 * 1000, output = 4 * Th, power_consumption = 100, name = 'Odin', },
     { epoch = M.epoches.gpu, cost = 1000 * 1000 * 1000, output = 100 * Th, power_consumption = 10000, name = 'Voodoo', },
 
-    { epoch = M.epoches.asic, cost = INF, output = 28 * Th, power_consumption = 1600, name = 'Realasic', }, -- 120k rub
+    --{ epoch = M.epoches.asic, cost = INF, output = 28 * Th, power_consumption = 1600, name = 'Realasic', }, -- 120k rub
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#1', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#2', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#3', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#4', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#5', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#6', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#7', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#8', },
+    { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#9', },
 
     --{ epoch = M.epoches.alien, cost = INF, output = 999 * Ph, power_consumption = 1000 * 1000, name = 'Kirill', },
 }
@@ -44,7 +53,7 @@ M.chips = {
 M.epochLimits = {
     [M.epoches.cpu] = 0,
     [M.epoches.gpu] = 2 * 1000,
-    [M.epoches.asic] = 50 * 1000 * 1000,
+    [M.epoches.asic] = 1000 * 1000,
     --[M.epoches.alien] = 1000 * 1000 * 1000 * 1000,
 }
 
