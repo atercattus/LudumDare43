@@ -15,13 +15,13 @@ local chipsConfig = config.chips
 local turboBoostStep = 5 -- На сколько одно нажатие Turbo ускоряет работу
 local turboFadingStep = 2 -- На сколько за секунду замедляется Turbo режим
 
-local electricityBillCoeff = 0.0001 -- Стоимость 1 W/s в LC. В реальности порядка 4к руб за 1кW.
+local electricityBillCoeff = 0.1 -- Стоимость 1 W/s в LC. В реальности порядка 4к руб за 1кW.
 
 function M.newGameState()
     local state = {
         -- Состояние
-        coins = 43.0, -- Сколько всего монет доступно (LC)
-        xchg = 100, -- Текущий курс обмена Mhash на LC
+        coins = 3, -- Сколько всего монет доступно (LC)
+        xchg = 2, -- Текущий курс обмена Mhash на LC
         epoch = epoches.cpu, -- Текущее поколение чипов
         chipsList = {}, -- Купленные чипы
         buyMultiplier = 1, -- Множитель количества при покупке
@@ -31,6 +31,7 @@ function M.newGameState()
         outputTotal = 0.0, -- Выработка в hash/sec с момента прошлой покупки LC
         consumption = 0, -- Текущее потребление в W/sec
         consumptionCost = 0.0, -- Стоимость текущего потребления в LC/sec
+        maximumOutput = 0, -- Максимальный получаемый output за все время
 
         -- Статичные
         overheatPercentage = 60, -- С этого уровня начинается перегрев
@@ -42,7 +43,7 @@ function M.newGameState()
         local epoch = self.epoch
 
         for _, chip in ipairs(chipsConfig) do
-            if chip.epoch <= epoch then
+            if (chip.epoch <= epoch) and (chip.minimal_output <= self.maximumOutput) then
                 list[#list + 1] = copyPlain(chip)
             end
         end
@@ -207,6 +208,10 @@ function M.newGameState()
         shortInfo.changedOutput = shortInfo.changedOutput or (self.output ~= output)
         self.output = output
         self.outputTotal = outputTotal
+
+        if self.maximumOutput < output then
+            self.maximumOutput = output
+        end
 
         shortInfo.changedConsumption = (consumption > 0) or (self.consumption ~= consumption)
         self.consumption = consumption
