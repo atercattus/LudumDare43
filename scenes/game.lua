@@ -19,6 +19,7 @@ local farmBuilder = require("builders.farm")
 local shopBuilder = require("builders.shop")
 
 local configEpoches = require("data.config").epoches
+local configChips = require("data.config").chips
 
 local newGameState = require("state").newGameState
 
@@ -437,7 +438,7 @@ function scene:updateFarm()
                 },
             })
 
-            -- Строки добавляются в конец, т.к. что я знаю номер новой
+            -- Строки добавляются в конец, так что я знаю номер новой
             chipIdx2TblRow[chips.idx] = self.objects.tblFarm:getNumRows()
         end
     end
@@ -517,6 +518,15 @@ function scene:updateCounters()
 
     if shortInfo.changedFarm then
         self:updateFarm()
+    end
+
+    for farmRowIdx = 1, self.objects.tblFarm:getNumRows() do
+        local farmRow = self.objects.tblFarm:getRowAtIndex(farmRowIdx)
+        if farmRow ~= nil then
+            local chipIdx = farmRow.params.idx
+            local iconChipAdd = farmRow.objects.iconChipAdd
+            iconChipAdd.isVisible = configChips[chipIdx].cost <= self.gameState.coins
+        end
     end
 end
 
