@@ -3,6 +3,7 @@ local M = {}
 local ipairs = ipairs
 local floor = math.floor
 local tableRemove = table.remove
+local mathRandom = math.random
 
 local copyPlain = require('libs.utils').copyPlain
 
@@ -167,6 +168,10 @@ function M.newGameState()
                 if boost > 0 then
                     shortInfo.changedFarm = true
                     boost = boost - turboFadingStep * dt
+
+                    -- Тест на перегрев может вызывать deleteChip, т.е. выкидывать chips из массива chipsList
+                    self:processingTick_processOverheat(chips, boost, dt)
+
                     if boost > 100 then
                         boost = 100
                     elseif boost < 0 then
@@ -175,12 +180,12 @@ function M.newGameState()
                     chips.turboBoost = boost
                 end
 
-
                 local count = chips:turboBoostCount()
 
                 consumption = consumption + count * chipInfo.power_consumption
                 output = output + count * chipInfo.output
                 outputTotal = outputTotal + count * chipInfo.output * dt
+                shortInfo.changedOutput = true
             end
         end
 
@@ -191,9 +196,9 @@ function M.newGameState()
             shortInfo.changedCoins = true
         end
 
+        shortInfo.changedOutput = shortInfo.changedOutput or (self.output ~= output)
         self.output = output
         self.outputTotal = outputTotal
-        shortInfo.changedOutput = output > 0
 
         self.consumption = consumption
         shortInfo.changedConsumption = consumption > 0
@@ -204,6 +209,44 @@ function M.newGameState()
         end
 
         return shortInfo
+    end
+
+    function state:processingTick_processOverheat(chips, boost, dt)
+        local delta
+        if boost >= 100 then
+            delta = 5
+        elseif boost >= 80 then
+            delta = 2
+        elseif boost >= 60 then
+            delta = 1
+        else
+            -- Пусть чипы остывают супер быстро :)
+            chips.overheat = 0
+            return
+        end
+
+        chips.overheat = chips.overheat + (delta * dt)
+        if chips.overheat < 0 then
+            chips.overheat = 0
+            return
+        end
+
+        if chips.overheat > 20 then
+            local ev = mathRandom(0, 2000) < chips.overheat
+            if ev then
+                local cnt = math.round(chips.count * 0.01, 0)
+                if cnt == 0 then
+                    cnt = 1
+                end
+
+                -- ToDo: визуализация перегрева
+                print('OVERHEATED', chips.idx, chips.overheat, 'CNT=', cnt)
+                self:deleteChip(chips.idx, cnt)
+                return
+            end
+        end
+
+        return
     end
 
     function state:setBuyMultiplier(mult)
@@ -222,7 +265,8 @@ function M.newChipsState()
     local state = {
         idx = 0, -- Индекс в массиве config.chips
         count = 0, -- Общее количество
-        turboBoost = 0, -- "Турбо" режим в процентах от максимума
+        turboBoost = 0, -- "Турбо" режим в процентах от максимума (100)
+        overheat = 0, -- Температурное состояние чипов
     }
 
     function state:turboBoostCount()
