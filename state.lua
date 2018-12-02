@@ -160,6 +160,7 @@ function M.newGameState()
             changedXchg = false,
             changedConsumption = false,
             changedFarm = false,
+            changedShopList = false, -- Появился новый пункт в магазине
         }
 
         local consumption = 0
@@ -209,8 +210,8 @@ function M.newGameState()
         self.output = output
         self.outputTotal = outputTotal
 
-        if self.maximumOutput < output then
-            self.maximumOutput = output
+        if self:processingTick_processMaximumOutput() then
+            shortInfo.changedShopList = true
         end
 
         shortInfo.changedConsumption = (consumption > 0) or (self.consumption ~= consumption)
@@ -293,6 +294,29 @@ function M.newGameState()
 
         self.xchg = self.xchg + 0.01 * dt -- ToDo: сделать нормально
         return true
+    end
+
+    function state:processingTick_processMaximumOutput()
+        local newMaximum = self.output
+        local oldMaximum = self.maximumOutput
+
+        if self.maximumOutput >= newMaximum then
+            -- Это не новый максимум, так что нечего и проверять
+            return false
+        end
+        self.maximumOutput = newMaximum
+
+        local epoch = self.epoch
+
+        for _, chip in ipairs(chipsConfig) do
+            if chip.epoch > epoch then
+                -- skip
+            elseif (chip.minimal_output > oldMaximum) and (chip.minimal_output <= newMaximum) then
+                return true
+            end
+        end
+
+        return false
     end
 
     function state:setBuyMultiplier(mult)

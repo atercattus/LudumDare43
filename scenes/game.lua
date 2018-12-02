@@ -381,7 +381,12 @@ function scene:updateCounters()
         self:updateTxtElecBill()
     end
 
-    self:updateShop() -- ToDo: обновлять только тогда, когда нужно
+    if shortInfo.changedShopList then
+        scene.objects.tblShop:deleteAllRows()
+        scene:buildShop()
+    else
+        self:updateShop()
+    end
 
     if shortInfo.changedFarm then
         self:updateFarm()
