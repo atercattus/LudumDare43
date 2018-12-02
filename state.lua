@@ -15,7 +15,7 @@ local chipsConfig = config.chips
 local turboBoostStep = 5 -- На сколько одно нажатие Turbo ускоряет работу
 local turboFadingStep = 2 -- На сколько за секунду замедляется Turbo режим
 
-local electricityBillCoeff = 0.0001 -- Стоимость 1 W/s в LC
+local electricityBillCoeff = 0.0001 -- Стоимость 1 W/s в LC. В реальности порядка 4к руб за 1кW.
 
 function M.newGameState()
     local state = {
@@ -193,6 +193,10 @@ function M.newGameState()
             end
         end
 
+        if self:processingTick_processXchg(dt) then
+            shortInfo.changedXchg = true
+        end
+
         if outputTotal >= self.xchg then
             local add = floor(outputTotal / self.xchg)
             outputTotal = outputTotal - add * self.xchg
@@ -204,8 +208,8 @@ function M.newGameState()
         self.output = output
         self.outputTotal = outputTotal
 
+        shortInfo.changedConsumption = (consumption > 0) or (self.consumption ~= consumption)
         self.consumption = consumption
-        shortInfo.changedConsumption = consumption > 0
         self.consumptionCost = electricityBillCoeff * consumption
         if self.consumptionCost > 0 then
             self.coins = self.coins - self.consumptionCost
@@ -251,6 +255,39 @@ function M.newGameState()
         end
 
         return
+    end
+
+    function state:processingTick_processXchg(dt)
+        -- Расчет окупаемости
+        -- Сейчас хорошие ASIC'и окупаются за 1+ год. Для игры такое не подойдет :)
+
+        local epoch = self.epoch
+
+        local topChipHW = 0
+        local topChipCost = 0
+
+        for _, chip in ipairs(chipsConfig) do
+            if chip.epoch > epoch then
+                -- pass
+            else
+                local chipHW = chip.output / chip.power_consumption
+                if chipHW > topChipHW then
+                    topChipHW = chipHW
+                    topChipCost = chip.cost
+                end
+            end
+        end
+
+        local complexityFactor = 5 + mathRandom(epoch - 1, epoch)
+        if complexityFactor > 9 then
+            complexityFactor = 9
+        end
+        complexityFactor = complexityFactor / 10
+
+        topChipHW = topChipHW * complexityFactor
+
+        self.xchg = self.xchg + 0.01 * dt -- ToDo: сделать нормально
+        return true
     end
 
     function state:setBuyMultiplier(mult)
