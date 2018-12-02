@@ -281,6 +281,22 @@ function scene:buy(idx)
     end
 end
 
+function scene:buyOrThrowOutChip(idx, count)
+    local needToUpdate = false
+
+    if count > 0 then
+        needToUpdate = self.gameState:tryToBuy(idx, count)
+    elseif count < 0 then
+        needToUpdate = self.gameState:tryToThrowOut(idx, -count)
+    end
+
+    if needToUpdate then
+        self:updateTxtCoins()
+        self:updateFarm()
+        self:updateShop()
+    end
+end
+
 function scene:updateFarm()
     local tblFarm = self.objects.tblFarm
     local chipsList = self.gameState.chipsList
@@ -305,10 +321,35 @@ function scene:updateFarm()
                     idx = chips.idx,
                 },
             })
+
+            -- Строки добавляются в конец, т.к. что я знаю номер новой
+            chipIdx2TblRow[chips.idx] = self.objects.tblFarm:getNumRows()
         end
     end
 
-    -- ToDo: удаление строк
+    -- удаление строк
+    local needToReload = false
+    for chipIdx, rowIdx in pairs(chipIdx2TblRow) do
+        local found = false
+        for _, chips in ipairs(chipsList) do
+            if chips.idx == chipIdx then
+                found = true
+                break
+            end
+        end
+
+        if not found then
+            needToReload = true
+            break
+        end
+    end
+
+    if needToReload then
+        -- Из-за бага в Короне после удаления строк ломается их индексация.
+        -- Так что приходится перезагружать все заново
+        self.objects.tblFarm:deleteAllRows()
+        self:updateFarm() -- Рекурсия!
+    end
 end
 
 function scene:updateShop()

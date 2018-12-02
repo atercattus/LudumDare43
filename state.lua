@@ -2,6 +2,7 @@ local M = {}
 
 local ipairs = ipairs
 local floor = math.floor
+local tableRemove = table.remove
 
 local copyPlain = require('libs.utils').copyPlain
 
@@ -17,7 +18,7 @@ local electricityBillCoeff = 0.0001 -- Стоимость 1 W/s в LC
 function M.newGameState()
     local state = {
         -- Состояние
-        coins = 43.0, -- Сколько всего монет доступно (LC)
+        coins = 500 + 43.0, -- Сколько всего монет доступно (LC)
         xchg = 100, -- Текущий курс обмена Mhash на LC
         epoch = epoches.cpu, -- Текущее поколение чипов
         chipsList = {}, -- Купленные чипы
@@ -44,23 +45,32 @@ function M.newGameState()
         return list
     end
 
-    function state:tryToBuy(chipIdx)
+    function state:tryToBuy(chipIdx, count)
+        local count = count or self.buyMultiplier
+
         if (chipIdx < 1) or (chipIdx > #chipsConfig) then
             return false
         end
 
         local chipInfo = chipsConfig[chipIdx]
 
-        local cost = chipInfo.cost * self.buyMultiplier
+        local cost = chipInfo.cost * count
 
         if (self.coins < cost) or (self.epoch < chipInfo.epoch) then
             return false
         end
 
         self.coins = self.coins - cost
-        self:addChip(chipIdx, self.buyMultiplier)
+        self:addChip(chipIdx, count)
 
         return true
+    end
+
+    function state:tryToThrowOut(chipIdx, count)
+        if (chipIdx < 1) or (chipIdx > #chipsConfig) then
+            return false
+        end
+        return state:deleteChip(chipIdx, count)
     end
 
     function state:addChip(chipIdx, mult)
@@ -83,6 +93,31 @@ function M.newGameState()
         end
 
         ourChips.count = ourChips.count + mult
+    end
+
+    function state:deleteChip(chipIdx, mult)
+        local mult = mult or 1
+
+        local ourChips
+        local idx
+        for i, chips in ipairs(self.chipsList) do
+            if chips.idx == chipIdx then
+                ourChips = chips
+                idx = i
+                break
+            end
+        end
+
+        if ourChips == nil then
+            return false
+        end
+
+        ourChips.count = ourChips.count - mult
+        if ourChips.count <= 0 then
+            tableRemove(self.chipsList, idx)
+        end
+
+        return true
     end
 
     function state:getShopChipInfo(chipIdx)

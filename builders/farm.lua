@@ -69,12 +69,12 @@ function M.createRow(scene, parentRow)
     txtConsumption.y = 10
     txtConsumption.anchorY = 0
 
-    local rowTitle = display.newText({ parent = parentRow, text = "-", font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor(0, 0, 0)
-    rowTitle.anchorX = 0
-    rowTitle.x = posX + 500
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
+    local txtChipDelete = display.newText({ parent = parentRow, text = "-", font = fontName, fontSize = textHeight, align = 'left' })
+    txtChipDelete:setFillColor(0, 0, 0)
+    txtChipDelete.anchorX = 0
+    txtChipDelete.x = posX + 520
+    txtChipDelete.y = 10
+    txtChipDelete.anchorY = 0
 
     local txtCount = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
     parentRow.objects.txtCount = txtCount
@@ -84,12 +84,35 @@ function M.createRow(scene, parentRow)
     txtCount.y = 10
     txtCount.anchorY = 0
 
-    local rowTitle = display.newText({ parent = parentRow, text = "+", font = fontName, fontSize = textHeight, align = 'left' })
-    rowTitle:setFillColor(0, 0, 0)
-    rowTitle.anchorX = 0
-    rowTitle.x = posX + 800
-    rowTitle.y = 10
-    rowTitle.anchorY = 0
+    local txtChipAdd = display.newText({ parent = parentRow, text = "+", font = fontName, fontSize = textHeight, align = 'left' })
+    txtChipAdd:setFillColor(0, 0, 0)
+    txtChipAdd.anchorX = 0
+    txtChipAdd.x = posX + 800
+    txtChipAdd.y = 10
+    txtChipAdd.anchorY = 0
+
+    local function onChangeCount(event)
+        if event.phase ~= 'began' then
+            return true
+        end
+
+        local count = scene.gameState.buyMultiplier
+
+        if event.target == txtChipAdd then
+            -- ok
+        elseif event.target == txtChipDelete then
+            count = -count
+        else
+            return
+        end
+
+        scene:buyOrThrowOutChip(parentRow.params.idx, count)
+
+        return true
+    end
+
+    txtChipDelete:addEventListener('touch', onChangeCount)
+    txtChipAdd:addEventListener('touch', onChangeCount)
 
     M.updateByState(scene, parentRow)
 end
