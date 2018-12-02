@@ -5,6 +5,7 @@ local mathFloor = math.floor
 local tableRemove = table.remove
 local mathRandom = math.random
 local mathRound = math.round
+local systemGetTimer = system.getTimer
 
 local copyPlain = require('libs.utils').copyPlain
 
@@ -37,7 +38,13 @@ function M.newGameState()
 
         -- Статичные
         overheatPercentage = 60, -- С этого уровня начинается перегрев
+        startedAt = systemGetTimer(), -- Время запуска
     }
+    state.maximumCoins = state.coins
+
+    function state:clearChipsList()
+        self.chipsList = {}
+    end
 
     function state:switchShopType(shopChipType)
         if self.shopChipType == shopChipType then
@@ -171,8 +178,6 @@ function M.newGameState()
         end
 
         ourChips.turboBoost = ourChips.turboBoost + turboBoostStep
-
-        -- ToDo: if ourChips.turboBoost >= 100 - ПЕРЕГРЕВ
     end
 
     function state:processingTick(dt)
@@ -241,12 +246,12 @@ function M.newGameState()
 
         shortInfo.changedConsumption = (consumption > 0) or (self.consumption ~= consumption)
         self.consumption = consumption
-        local coeff = mathFloor(chipsCount / 10)
-        if coeff < 1 then
-            coeff = 1
-        end
-        coeff = coeff * electricityBillCoeff
-        self.consumptionCost = coeff * consumption
+        --        local coeff = mathFloor(chipsCount / 10)
+        --        if coeff < 1 then
+        --            coeff = 1
+        --        end
+        --        coeff = coeff * electricityBillCoeff
+        self.consumptionCost = electricityBillCoeff * consumption
         if self.consumptionCost > 0 then
             self.coins = self.coins - self.consumptionCost
             shortInfo.changedCoins = true
@@ -276,7 +281,7 @@ function M.newGameState()
         end
 
         if chips.overheat > 20 then
-            local ev = mathRandom(0, 2000) < chips.overheat
+            local ev = mathRandom(0, 1000) < chips.overheat
             if ev then
                 local cnt = mathRound(chips.count * 0.01, 0)
                 if cnt == 0 then
@@ -299,30 +304,46 @@ function M.newGameState()
 
         local epoch = self.epoch
 
-        local topChipHW = 0
-        local topChipCost = 0
+        local maximumCoins = self.maximumCoins
+
+        local topChipH = 0
+
+        local newChipEverySecs = 90 -- где-то в мире запускают новый чит каждые сколько секунд
+        local chipCount = mathFloor((systemGetTimer() - self.startedAt) / 1000 / newChipEverySecs)
+        if chipCount < 1 then
+            chipCount = 1
+        end
 
         for _, chip in ipairs(chipsConfig) do
             if chip.epoch > epoch then
                 -- pass
+            elseif chip.cost > maximumCoins then
+                -- pass
             else
-                local chipHW = chip.output / chip.power_consumption
-                if chipHW > topChipHW then
-                    topChipHW = chipHW
-                    topChipCost = chip.cost
+                local chipH = chip.output
+                if chipH > topChipH then
+                    topChipH = chipH
                 end
             end
         end
 
-        local complexityFactor = 5 + mathRandom(epoch - 1, epoch)
+        local complexityFactor = 2 + epoch
         if complexityFactor > 9 then
             complexityFactor = 9
         end
         complexityFactor = complexityFactor / 10
 
-        topChipHW = topChipHW * complexityFactor
+        local bill = chipCount * topChipH * 3 * complexityFactor
+        if bill < 2.5 then
+            bill = 2.5
+        end
 
-        self.xchg = self.xchg + 0.01 * dt -- ToDo: сделать нормально
+        local delta = bill - self.xchg
+        if delta > 0.1 then
+            delta = 0.1
+        end
+
+        self.xchg = self.xchg + delta * dt
         return true
     end
 
@@ -385,7 +406,7 @@ function M.newChipsState()
 
     function state:turboBoostCount()
         -- При активном бусте чипов как бы становится больше
-        return self.count * ((self.turboBoost / 100) + 1)
+        return self.count * ((1.2 * self.turboBoost / 100) + 1)
     end
 
     return state

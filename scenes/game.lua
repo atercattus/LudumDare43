@@ -10,6 +10,8 @@ local composer = require("composer")
 local graphics = require("graphics")
 local widget = require("widget")
 
+local transitionTo = transition.to
+
 local ui_utils = require("libs.ui_utils")
 local tableMouseScroller = ui_utils.tableMouseScroller
 
@@ -78,6 +80,31 @@ function scene:setup()
 
     scene:setupFarmTableAndTitle()
     scene:setupShopTableAndTitle()
+
+    local bgLooser = display.newRect(self.view, 0, 0, W, H)
+    bgLooser.anchorX = 0
+    bgLooser.anchorY = 0
+    bgLooser:setFillColor(0, 0, 0, 0.5)
+    objects.bgLooser = bgLooser
+    bgLooser.isVisible = false
+
+    local txtLooser = display.newText({ text = 'You are short of money\nclick to repeat', width = W, font = fontName, fontSize = 80, align = 'center' })
+    txtLooser:setFillColor(1, 0.2, 0.2)
+    txtLooser.anchorX = 0.5
+    txtLooser.anchorY = 0.5
+    txtLooser.x = W/2
+    txtLooser.y = H/2
+    self.view:insert(txtLooser)
+    objects.txtLooser = txtLooser
+    txtLooser.isVisible = false
+
+    bgLooser:addEventListener('touch', function(event)
+        if event.phase == 'began' then
+            print('restart')
+            composer.gotoScene('scenes.menu')
+        end
+        return true
+    end)
 end
 
 function scene:setupFarmTableAndTitle()
@@ -436,6 +463,15 @@ function scene:updateCounters()
 
     if shortInfo.changedCoins then
         self:updateTxtCoins()
+        if self.gameState.coins <= 0 then
+            -- проигрыш
+            self.objects.tblFarm:deleteAllRows()
+            self.gameState:clearChipsList()
+
+            self.objects.bgLooser.isVisible = true
+            self.objects.txtLooser.isVisible = true
+            return
+        end
         if self.gameState:tryToOpenNewChipType() then
             self:updateShopChipTypeTabs()
         end
@@ -469,6 +505,29 @@ scene:addEventListener("show", function(event)
     if (event.phase == "will") then
         scene.gameState = newGameState()
 
+        Runtime:addEventListener('key', function(event)
+            if event.phase ~= 'down' then
+                return false
+            elseif event.keyName == 'f5' then
+                scene.gameState.coins = scene.gameState.coins + 1000
+
+                scene:updateTxtCoins()
+                if scene.gameState:tryToOpenNewChipType() then
+                    scene:updateShopChipTypeTabs()
+                end
+            elseif event.keyName == 'f6' then
+                scene.gameState.coins = scene.gameState.coins + 10 * 1000 * 1000
+
+                scene:updateTxtCoins()
+                if scene.gameState:tryToOpenNewChipType() then
+                    scene:updateShopChipTypeTabs()
+                end
+            elseif event.keyName == 'f7' then
+                scene.gameState.coins = -1000
+                scene:updateTxtCoins()
+            end
+        end)
+
         scene:loadResources()
         scene:setup()
         scene:updateTxtOutput()
@@ -477,8 +536,12 @@ scene:addEventListener("show", function(event)
         scene:updateTxtElecBill()
 
         scene.updateCountersDt = getTimer()
-        timer.performWithDelay(150, function() scene:updateCounters() end, 0)
+        scene.updateCountersTimer = timer.performWithDelay(150, function() scene:updateCounters() end, 0)
     end
+end)
+
+scene:addEventListener("hide", function(event)
+    timer.cancel(scene.updateCountersTimer)
 end)
 
 return scene

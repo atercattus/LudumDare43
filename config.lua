@@ -1,6 +1,4 @@
-appScale = 1
-
-gameBuildVersion = "2018.12.01"
+gameBuildVersion = "2018.12.03"
 
 gameName = 'LudumCoin'
 
@@ -8,8 +6,8 @@ fontName = 'data/ErikaOrmig.ttf' -- https://www.1001fonts.com/erika-ormig-font.h
 
 application = {
     content = {
-        width = appScale * 900,
-        height = appScale * 1600,
+        width = 900,
+        height = 1600,
         scale = 'letterbox',
         fps = 60,
     }
