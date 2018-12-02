@@ -16,6 +16,8 @@ local tableMouseScroller = ui_utils.tableMouseScroller
 local farmBuilder = require("builders.farm")
 local shopBuilder = require("builders.shop")
 
+local configEpoches = require("data.config").epoches
+
 local newGameState = require("state").newGameState
 
 local scene = composer.newScene()
@@ -87,14 +89,15 @@ function scene:setupFarmTableAndTitle()
         farmBuilder.createRow(scene, event.row)
     end
 
+    local farmTopY = 100
     local tblFarm = widget.newTableView({
         width = W * (farmPercentWidth / 100),
-        height = H - self.farmRowHeight - 5,
+        height = H - farmTopY - 5,
         isBounceEnabled = false,
         onRowRender = onFarmRowRender,
     })
     tblFarm.x = 5
-    tblFarm.y = 100
+    tblFarm.y = farmTopY
     tblFarm.anchorX = 0
     tblFarm.anchorY = 0
     tblFarm.noLines = true
@@ -124,7 +127,7 @@ function scene:setupFarmTableAndTitle()
     txtElecBill:setFillColor(0.8, 1, 1)
     txtElecBill.anchorX = 1
     txtElecBill.anchorY = 1
-    txtElecBill.x = tblFarm.contentBounds.xMax
+    txtElecBill.x = tblFarm.contentBounds.xMax - 5
     txtElecBill.y = tblFarm.contentBounds.yMin - 5
     self.view:insert(txtElecBill)
     scene.objects.txtElecBill = txtElecBill
@@ -146,15 +149,16 @@ function scene:setupShopTableAndTitle()
         scene:buy(event.target.index)
     end
 
+    local shopTopY = 100
     local tblShop = widget.newTableView({
         width = W - self.objects.tblFarm.width - 25,
-        height = H - rowHeight - 5,
+        height = H - shopTopY - 5,
         isBounceEnabled = false,
         onRowRender = onRowRender,
         onRowTouch = onRowTouch,
     })
     tblShop.x = self.objects.tblFarm.contentBounds.xMax + 15
-    tblShop.y = 100
+    tblShop.y = shopTopY
     tblShop.anchorX = 0
     tblShop.anchorY = 0
     tblShop.noLines = true
@@ -182,12 +186,13 @@ function scene:setupShopTableAndTitle()
     self.objects.txtShop = txtShop
 
     self:setupShopTableAndTitle_multipliers()
+    self:setupShopTableAndTitle_chipTypeTabs()
 end
 
 function scene:setupShopTableAndTitle_multipliers()
     local tblShop = self.objects.tblShop
 
-    local offsets = { [0] = 0, [1] = 90, [2] = 200 }
+    local offsets = { [0] = 0, [1] = 65, [2] = 150 }
 
     self.objects.txtBuyMultipliers = {}
 
@@ -201,11 +206,11 @@ function scene:setupShopTableAndTitle_multipliers()
     for multIdx = 0, 2 do
         local mult = 10 ^ multIdx
 
-        local txtMult = display.newText({ text = 'x' .. mult, width = tblShop.width, font = fontName, fontSize = 42, align = 'left' })
+        local txtMult = display.newText({ text = 'x' .. mult, width = tblShop.width, font = fontName, fontSize = 36, align = 'left' })
         txtMult:setFillColor(0.5, 0.5, 0.5)
         txtMult.anchorX = 0
         txtMult.anchorY = 0
-        txtMult.x = tblShop.x + 300 + offsets[multIdx]
+        txtMult.x = tblShop.x + 370 + offsets[multIdx]
         txtMult.y = 50
         self.view:insert(txtMult)
         self.objects.txtBuyMultipliers[mult] = txtMult
@@ -219,6 +224,43 @@ function scene:setupShopTableAndTitle_multipliers()
     end
 
     scene:updateTxtBuyMultiplier()
+end
+
+function scene:setupShopTableAndTitle_chipTypeTabs()
+    local iconSize = 54
+
+    self.objects.iconChipTypes = {}
+
+    local function onChipTypeChanged(chipTypeIdx)
+        print('SWITCH TO', chipTypeIdx)
+        --        if scene.gameState:setBuyMultiplier(mult) then
+        --            scene:updateTxtBuyMultiplier()
+        --            scene:updateShop()
+        --        end
+    end
+
+    for _, chipTypeIdx in pairs(configEpoches) do
+        local icon = display.newRect(0, 0, iconSize, iconSize)
+        icon.fill = { type = "image", sheet = self.chipsImageSheet, frame = chipTypeIdx }
+        icon.x = self.objects.txtShop.x + 100 + (chipTypeIdx - 1) * (iconSize + 2)
+        icon.y = 46
+        icon.anchorX = 0
+        icon.anchorY = 0
+
+        self.view:insert(icon)
+        self.objects.iconChipTypes[chipTypeIdx] = icon
+
+        if self.gameState.epoch < chipTypeIdx then
+            icon.isVisible = false
+        end
+
+        icon:addEventListener('touch', function(event)
+            if event.phase == 'began' then
+                onChipTypeChanged(chipTypeIdx)
+            end
+            return true
+        end)
+    end
 end
 
 function scene:buildShop()
