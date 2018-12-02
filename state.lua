@@ -1,7 +1,7 @@
 local M = {}
 
 local ipairs = ipairs
-local floor = math.floor
+local mathFloor = math.floor
 local tableRemove = table.remove
 local mathRandom = math.random
 local mathRound = math.round
@@ -178,6 +178,7 @@ function M.newGameState()
         local consumption = 0
         local output = 0
         local outputTotal = self.outputTotal
+        local chipsCount = 0
         if dt > 0 then
             for _, chips in ipairs(self.chipsList) do
                 local chipInfo = chipsConfig[chips.idx]
@@ -198,6 +199,8 @@ function M.newGameState()
                     chips.turboBoost = boost
                 end
 
+                chipsCount = chipsCount + chips.count
+
                 local count = chips:turboBoostCount()
 
                 consumption = consumption + count * chipInfo.power_consumption
@@ -212,7 +215,7 @@ function M.newGameState()
         end
 
         if outputTotal >= self.xchg then
-            local add = floor(outputTotal / self.xchg)
+            local add = mathFloor(outputTotal / self.xchg)
             outputTotal = outputTotal - add * self.xchg
             self.coins = self.coins + add
             shortInfo.changedCoins = true
@@ -228,7 +231,12 @@ function M.newGameState()
 
         shortInfo.changedConsumption = (consumption > 0) or (self.consumption ~= consumption)
         self.consumption = consumption
-        self.consumptionCost = electricityBillCoeff * consumption
+        local coeff = mathFloor(chipsCount / 10)
+        if coeff < 1 then
+            coeff = 1
+        end
+        coeff = coeff * electricityBillCoeff
+        self.consumptionCost = coeff * consumption
         if self.consumptionCost > 0 then
             self.coins = self.coins - self.consumptionCost
             shortInfo.changedCoins = true
