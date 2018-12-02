@@ -25,6 +25,7 @@ function M.newGameState()
         epoch = epoches.cpu, -- Текущее поколение чипов
         chipsList = {}, -- Купленные чипы
         buyMultiplier = 1, -- Множитель количества при покупке
+        shopChipType = epoches.cpu, -- Текущий видимый раздел в магазине
 
         -- Вычисляемые на каждом такте
         output = 0.0, -- Выработка в Mhash/sec
@@ -37,14 +38,22 @@ function M.newGameState()
         overheatPercentage = 60, -- С этого уровня начинается перегрев
     }
 
+    function state:switchShopType(shopChipType)
+        if self.shopChipType == shopChipType then
+            return false
+        end
+        self.shopChipType = shopChipType
+        return true
+    end
+
     function state:getAllowedShopList()
         local list = {}
 
-        local epoch = self.epoch
+        local epoch = self.shopChipType
 
         local firstUnavailable = true
         for _, chip in ipairs(chipsConfig) do
-            if chip.epoch > epoch then
+            if chip.epoch ~= epoch then
                 -- skip
             else
                 local allowAdd = chip.cost <= self.maximumCoins

@@ -230,33 +230,48 @@ function scene:setupShopTableAndTitle_chipTypeTabs()
     local iconSize = 54
 
     self.objects.iconChipTypes = {}
-
-    local function onChipTypeChanged(chipTypeIdx)
-        print('SWITCH TO', chipTypeIdx)
-        --        if scene.gameState:setBuyMultiplier(mult) then
-        --            scene:updateTxtBuyMultiplier()
-        --            scene:updateShop()
-        --        end
-    end
+    self.objects.iconBgChipTypes = {}
 
     for _, chipTypeIdx in pairs(configEpoches) do
+        local iconBg = display.newRect(0, 0, iconSize + 4, iconSize + 4)
+        if self.gameState.shopChipType == chipTypeIdx then
+            iconBg:setFillColor(0.9, 0.9, 0.9)
+        else
+            iconBg:setFillColor(0, 0, 0)
+        end
+
+        iconBg.x = self.objects.txtShop.x + 100 + (chipTypeIdx - 1) * (iconSize + 2 + 4)
+        iconBg.y = 42
+        iconBg.anchorX = 0
+        iconBg.anchorY = 0
+
         local icon = display.newRect(0, 0, iconSize, iconSize)
         icon.fill = { type = "image", sheet = self.chipsImageSheet, frame = chipTypeIdx }
-        icon.x = self.objects.txtShop.x + 100 + (chipTypeIdx - 1) * (iconSize + 2)
-        icon.y = 46
+        icon.x = iconBg.x + 2
+        icon.y = iconBg.y + 2
         icon.anchorX = 0
         icon.anchorY = 0
 
+        self.view:insert(iconBg)
         self.view:insert(icon)
         self.objects.iconChipTypes[chipTypeIdx] = icon
+        self.objects.iconBgChipTypes[chipTypeIdx] = iconBg
 
         if self.gameState.epoch < chipTypeIdx then
             icon.isVisible = false
         end
 
         icon:addEventListener('touch', function(event)
-            if event.phase == 'began' then
-                onChipTypeChanged(chipTypeIdx)
+            if event.phase ~= 'began' then
+            elseif self.gameState.shopChipType == chipTypeIdx then
+            else
+                self.objects.iconBgChipTypes[self.gameState.shopChipType]:setFillColor(0, 0, 0)
+                self.objects.iconBgChipTypes[chipTypeIdx]:setFillColor(0.9, 0.9, 0.9)
+
+                if scene.gameState:switchShopType(chipTypeIdx) then
+                    scene.objects.tblShop:deleteAllRows()
+                    scene:buildShop()
+                end
             end
             return true
         end)
