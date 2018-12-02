@@ -11,6 +11,7 @@ local copyPlain = require('libs.utils').copyPlain
 local config = require("data.config")
 local epoches = config.epoches
 local chipsConfig = config.chips
+local configEpochLimits = config.epochLimits
 
 local turboBoostStep = 5 -- На сколько одно нажатие Turbo ускоряет работу
 local turboFadingStep = 2 -- На сколько за секунду замедляется Turbo режим
@@ -355,6 +356,20 @@ function M.newGameState()
 
         self.buyMultiplier = mult
         return true
+    end
+
+    function state:tryToOpenNewChipType()
+        if self.epoch >= #configEpochLimits then
+            -- Уже достигли всего
+            return false
+        end
+
+        if self.coins >= configEpochLimits[self.epoch + 1] then
+            self.epoch = self.epoch + 1
+            return true
+        end
+
+        return false
     end
 
     return state

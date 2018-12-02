@@ -278,6 +278,18 @@ function scene:setupShopTableAndTitle_chipTypeTabs()
     end
 end
 
+function scene:updateShopChipTypeTabs()
+    local epoch = self.gameState.epoch
+
+    for _, chipTypeIdx in pairs(configEpoches) do
+        if epoch < chipTypeIdx then
+            -- skip
+        elseif not self.objects.iconChipTypes[chipTypeIdx].isVisible then
+            self.objects.iconChipTypes[chipTypeIdx].isVisible = true
+        end
+    end
+end
+
 function scene:buildShop()
     local list = scene.gameState:getAllowedShopList()
 
@@ -424,6 +436,9 @@ function scene:updateCounters()
 
     if shortInfo.changedCoins then
         self:updateTxtCoins()
+        if self.gameState:tryToOpenNewChipType() then
+            self:updateShopChipTypeTabs()
+        end
     end
 
     if shortInfo.changedOutput then
