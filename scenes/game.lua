@@ -211,7 +211,7 @@ end
 
 function scene:updateTxtElecBill()
     local state = self.gameState
-    self.objects.txtElecBill.text = 'Total ' .. ui_utils.format_Wsec(state.consumption) .. ': -' .. ui_utils.format_LCsec(state.consumptionCost)
+    self.objects.txtElecBill.text = 'Costs ' .. ui_utils.format_Wsec(state.consumption) .. ': -' .. ui_utils.format_LCsec(state.consumptionCost)
 end
 
 function scene:buy(idx)

@@ -12,6 +12,8 @@ local chipsConfig = config.chips
 local turboBoostStep = 5 -- На сколько одно нажатие Turbo ускоряет работу
 local turboFadingStep = 2 -- На сколько за секунду замедляется Turbo режим
 
+local electricityBillCoeff = 0.0001 -- Стоимость 1 W/s в LC
+
 function M.newGameState()
     local state = {
         -- Состояние
@@ -111,7 +113,6 @@ function M.newGameState()
             changedOutput = false,
             changedXchg = false,
             changedConsumption = false,
-            changedConsumptionCost = false, -- ToDo: self.consumptionCost
             changedFarm = false,
         }
 
@@ -156,6 +157,11 @@ function M.newGameState()
 
         self.consumption = consumption
         shortInfo.changedConsumption = consumption > 0
+        self.consumptionCost = electricityBillCoeff * consumption
+        if self.consumptionCost > 0 then
+            self.coins = self.coins - self.consumptionCost
+            shortInfo.changedCoins = true
+        end
 
         return shortInfo
     end
