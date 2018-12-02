@@ -246,14 +246,9 @@ function M.newGameState()
 
         shortInfo.changedConsumption = (consumption > 0) or (self.consumption ~= consumption)
         self.consumption = consumption
-        --        local coeff = mathFloor(chipsCount / 10)
-        --        if coeff < 1 then
-        --            coeff = 1
-        --        end
-        --        coeff = coeff * electricityBillCoeff
         self.consumptionCost = electricityBillCoeff * consumption
         if self.consumptionCost > 0 then
-            self.coins = self.coins - self.consumptionCost
+            self.coins = self.coins - self.consumptionCost * dt
             shortInfo.changedCoins = true
         end
 
