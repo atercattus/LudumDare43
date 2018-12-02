@@ -8,6 +8,9 @@ local round = utils.round
 
 local powers = { 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' }
 
+-- В UI измеряю хеши сразу в Mega+
+local hashesUIMultiplier = 1000*1000
+
 function M.tableMouseScroller(rowHeight)
     return function(event)
         local tbl = event.target
@@ -33,11 +36,13 @@ function M.format_Wsec(value)
 end
 
 function M.format_Hsec(value)
-    return M.formatWithSiffix(value, ' h/s')
+    value = value * hashesUIMultiplier
+    return M.formatWithSiffix(value, 'h/s')
 end
 
 function M.format_H(value)
-    return M.formatWithSiffix(value, ' h')
+    value = value * hashesUIMultiplier
+    return M.formatWithSiffix(value, 'h')
 end
 
 function M.format_cost(value)
