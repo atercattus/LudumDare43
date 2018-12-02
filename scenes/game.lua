@@ -39,7 +39,6 @@ function scene:getChipFrame(chipIdx)
 end
 
 function scene:loadResources()
-    --self.chipsCount = 16*4
     local options = {
         width = 64,
         height = 64,
@@ -53,6 +52,13 @@ function scene:loadResources()
         numFrames = 2,
     }
     self.turboButtonImageSheet = graphics.newImageSheet("data/turbo.png", options)
+
+    local options = {
+        width = 64,
+        height = 64,
+        numFrames = 2,
+    }
+    self.plusMinusImageSheet = graphics.newImageSheet("data/plus_minus.png", options)
 end
 
 function scene:setup()
@@ -100,7 +106,7 @@ function scene:setup()
     objects.bgLooser = bgLooser
     bgLooser.isVisible = false
 
-    local txtLooser = display.newText({ text = 'You are short of money\nclick to repeat', width = W, font = fontName, fontSize = 80, align = 'center' })
+    local txtLooser = display.newText({ text = 'You are short of money\nClick to repeat', width = W, font = fontName, fontSize = 80, align = 'center' })
     txtLooser:setFillColor(1, 0.2, 0.2)
     txtLooser.anchorX = 0.5
     txtLooser.anchorY = 0.5

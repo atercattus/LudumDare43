@@ -69,27 +69,31 @@ function M.createRow(scene, parentRow)
     txtConsumption.y = 10
     txtConsumption.anchorY = 0
 
-    local txtChipDelete = display.newText({ parent = parentRow, text = "-", font = fontName, fontSize = textHeight, align = 'left' })
-    txtChipDelete:setFillColor(0, 0, 0)
-    txtChipDelete.anchorX = 0
-    txtChipDelete.x = posX + 520
-    txtChipDelete.y = 10
-    txtChipDelete.anchorY = 0
+    local iconChipDelete = display.newRect(0, 0, iconSize, iconSize)
+    parentRow:insert(iconChipDelete)
+    parentRow.objects.iconChipDelete = iconChipDelete
+    iconChipDelete.fill = { type = "image", sheet = scene.plusMinusImageSheet, frame = 1 }
+    iconChipDelete.x = posX + 800
+    iconChipDelete.y = 10
+    iconChipDelete.anchorX = 0
+    iconChipDelete.anchorY = 0
 
-    local txtCount = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight, align = 'left' })
+    local txtCount = display.newText({ parent = parentRow, text = '', font = fontName, fontSize = textHeight + 2, align = 'left' })
     parentRow.objects.txtCount = txtCount
     txtCount:setFillColor(0, 0, 0)
     txtCount.anchorX = 0
-    txtCount.x = posX + 600
-    txtCount.y = 10
+    txtCount.x = posX + 450
+    txtCount.y = 20
     txtCount.anchorY = 0
 
-    local txtChipAdd = display.newText({ parent = parentRow, text = "+", font = fontName, fontSize = textHeight, align = 'left' })
-    txtChipAdd:setFillColor(0, 0, 0)
-    txtChipAdd.anchorX = 0
-    txtChipAdd.x = posX + 800
-    txtChipAdd.y = 10
-    txtChipAdd.anchorY = 0
+    local iconChipAdd = display.newRect(0, 0, iconSize, iconSize)
+    parentRow:insert(iconChipAdd)
+    parentRow.objects.iconChipAdd = iconChipAdd
+    iconChipAdd.fill = { type = "image", sheet = scene.plusMinusImageSheet, frame = 2 }
+    iconChipAdd.x = posX + 700
+    iconChipAdd.y = 10
+    iconChipAdd.anchorX = 0
+    iconChipAdd.anchorY = 0
 
     local function onChangeCount(event)
         if event.phase ~= 'began' then
@@ -98,9 +102,9 @@ function M.createRow(scene, parentRow)
 
         local count = scene.gameState.buyMultiplier
 
-        if event.target == txtChipAdd then
+        if event.target == iconChipAdd then
             -- ok
-        elseif event.target == txtChipDelete then
+        elseif event.target == iconChipDelete then
             count = -count
         else
             return
@@ -111,8 +115,8 @@ function M.createRow(scene, parentRow)
         return true
     end
 
-    txtChipDelete:addEventListener('touch', onChangeCount)
-    txtChipAdd:addEventListener('touch', onChangeCount)
+    iconChipAdd:addEventListener('touch', onChangeCount)
+    iconChipDelete:addEventListener('touch', onChangeCount)
 
     M.updateByState(scene, parentRow)
 end
