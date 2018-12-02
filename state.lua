@@ -21,7 +21,7 @@ function M.newGameState()
     local state = {
         -- Состояние
         coins = 3, -- Сколько всего монет доступно (LC)
-        xchg = 2, -- Текущий курс обмена Mhash на LC
+        xchg = 2.5, -- Текущий курс обмена Mhash на LC
         epoch = epoches.cpu, -- Текущее поколение чипов
         chipsList = {}, -- Купленные чипы
         buyMultiplier = 1, -- Множитель количества при покупке
@@ -31,7 +31,7 @@ function M.newGameState()
         outputTotal = 0.0, -- Выработка в hash/sec с момента прошлой покупки LC
         consumption = 0, -- Текущее потребление в W/sec
         consumptionCost = 0.0, -- Стоимость текущего потребления в LC/sec
-        maximumOutput = 0, -- Максимальный получаемый output за все время
+        maximumCoins = 0, -- Максимальное (пиковое) полученное число монент за все время
 
         -- Статичные
         overheatPercentage = 60, -- С этого уровня начинается перегрев
@@ -42,8 +42,8 @@ function M.newGameState()
 
         local epoch = self.epoch
 
-        for _, chip in ipairs(chipsConfig) do
-            if (chip.epoch <= epoch) and (chip.minimal_output <= self.maximumOutput) then
+        for i, chip in ipairs(chipsConfig) do
+            if (chip.epoch <= epoch) and ((chip.cost <= self.maximumCoins) or (i == 1)) then
                 list[#list + 1] = copyPlain(chip)
             end
         end
@@ -210,7 +210,7 @@ function M.newGameState()
         self.output = output
         self.outputTotal = outputTotal
 
-        if self:processingTick_processMaximumOutput() then
+        if self:processingTick_processMaximumCoins() then
             shortInfo.changedShopList = true
         end
 
@@ -296,22 +296,22 @@ function M.newGameState()
         return true
     end
 
-    function state:processingTick_processMaximumOutput()
-        local newMaximum = self.output
-        local oldMaximum = self.maximumOutput
+    function state:processingTick_processMaximumCoins()
+        local newMaximum = self.coins
+        local oldMaximum = self.maximumCoins
 
-        if self.maximumOutput >= newMaximum then
+        if self.maximumCoins >= newMaximum then
             -- Это не новый максимум, так что нечего и проверять
             return false
         end
-        self.maximumOutput = newMaximum
+        self.maximumCoins = newMaximum
 
         local epoch = self.epoch
 
         for _, chip in ipairs(chipsConfig) do
             if chip.epoch > epoch then
                 -- skip
-            elseif (chip.minimal_output > oldMaximum) and (chip.minimal_output <= newMaximum) then
+            elseif (chip.cost > oldMaximum) and (chip.cost <= newMaximum) then
                 return true
             end
         end
