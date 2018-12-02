@@ -2,6 +2,7 @@ local fontName = fontName
 
 local display = display
 local ipairs = ipairs
+local pairs = pairs
 
 local getTimer = system.getTimer
 
@@ -146,13 +147,13 @@ function scene:setupShopTableAndTitle()
     end
 
     local tblShop = widget.newTableView({
-        width = W - scene.objects.tblFarm.width - 25,
+        width = W - self.objects.tblFarm.width - 25,
         height = H - rowHeight - 5,
         isBounceEnabled = false,
         onRowRender = onRowRender,
         onRowTouch = onRowTouch,
     })
-    tblShop.x = scene.objects.tblFarm.contentBounds.xMax + 15
+    tblShop.x = self.objects.tblFarm.contentBounds.xMax + 15
     tblShop.y = 100
     tblShop.anchorX = 0
     tblShop.anchorY = 0
@@ -168,8 +169,8 @@ function scene:setupShopTableAndTitle()
     tblShop:addEventListener("mouse", function(event) tblfarmScroller(event) end)
 
     self.view:insert(tblShop)
-    scene.objects.tblShop = tblShop
-    scene:buildShop()
+    self.objects.tblShop = tblShop
+    self:buildShop()
 
     local txtShop = display.newText({ text = "Shop", width = W, font = fontName, fontSize = 40, align = 'left' })
     txtShop:setFillColor(1, 1, 1)
@@ -178,7 +179,46 @@ function scene:setupShopTableAndTitle()
     txtShop.x = tblShop.x + 10
     txtShop.y = 50
     self.view:insert(txtShop)
-    scene.objects.txtShop = txtShop
+    self.objects.txtShop = txtShop
+
+    self:setupShopTableAndTitle_multipliers()
+end
+
+function scene:setupShopTableAndTitle_multipliers()
+    local tblShop = self.objects.tblShop
+
+    local offsets = { [0] = 0, [1] = 90, [2] = 200 }
+
+    self.objects.txtBuyMultipliers = {}
+
+    local function onMultChanged(mult)
+        if scene.gameState:setBuyMultiplier(mult) then
+            scene:updateTxtBuyMultiplier()
+            scene:updateShop()
+        end
+    end
+
+    for multIdx = 0, 2 do
+        local mult = 10 ^ multIdx
+
+        local txtMult = display.newText({ text = 'x' .. mult, width = tblShop.width, font = fontName, fontSize = 42, align = 'left' })
+        txtMult:setFillColor(0.5, 0.5, 0.5)
+        txtMult.anchorX = 0
+        txtMult.anchorY = 0
+        txtMult.x = tblShop.x + 300 + offsets[multIdx]
+        txtMult.y = 50
+        self.view:insert(txtMult)
+        self.objects.txtBuyMultipliers[mult] = txtMult
+
+        txtMult:addEventListener('touch', function(event)
+            if event.phase == 'began' then
+                onMultChanged(mult)
+            end
+            return true
+        end)
+    end
+
+    scene:updateTxtBuyMultiplier()
 end
 
 function scene:buildShop()
@@ -212,6 +252,16 @@ end
 function scene:updateTxtElecBill()
     local state = self.gameState
     self.objects.txtElecBill.text = 'Costs ' .. ui_utils.format_Wsec(state.consumption) .. ': -' .. ui_utils.format_LCsec(state.consumptionCost)
+end
+
+function scene:updateTxtBuyMultiplier()
+    local state = self.gameState
+
+    for mult, txt in pairs(self.objects.txtBuyMultipliers) do
+        local isActive = mult == state.buyMultiplier
+        local color = isActive and 1 or 0.5
+        txt:setFillColor(color, color, color)
+    end
 end
 
 function scene:buy(idx)

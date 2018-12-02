@@ -2,12 +2,9 @@ local fontName = fontName
 
 local display = display
 local require = require
-local math = math
 local unpack = unpack
 
 local config = require("data.config")
---local epoches = config.epoches
---local chips = config.chips
 
 local ui_utils = require("libs.ui_utils")
 
@@ -98,6 +95,7 @@ end
 
 function M.updateByState(scene, row)
     local gameState = scene.gameState
+    local buyMult = gameState.buyMultiplier
 
     local chipIdx = row.params.idx
     local chipInfo = config.chips[chipIdx]
@@ -105,11 +103,11 @@ function M.updateByState(scene, row)
     row.objects.icon.fill.frame = chipInfo.epoch
 
     row.objects.txtName.text = chipInfo.name
-    row.objects.txtOutput.text = ui_utils.format_Hsec(chipInfo.output)
-    row.objects.txtConsumption.text = ui_utils.format_Wsec(chipInfo.power_consumption)
-    row.objects.txtCost.text = ui_utils.format_cost(chipInfo.cost)
+    row.objects.txtOutput.text = ui_utils.format_Hsec(chipInfo.output * buyMult)
+    row.objects.txtConsumption.text = ui_utils.format_Wsec(chipInfo.power_consumption * buyMult)
+    row.objects.txtCost.text = ui_utils.format_cost(chipInfo.cost * buyMult)
 
-    local isMoneyEnough = gameState.coins >= chipInfo.cost
+    local isMoneyEnough = gameState.coins >= (chipInfo.cost * buyMult)
 
     local buyCostColor = isMoneyEnough and { 0, 0.7, 0 } or { 0.8, 0, 0 }
     row.objects.txtCost:setFillColor(unpack(buyCostColor))

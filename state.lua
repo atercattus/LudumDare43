@@ -21,6 +21,7 @@ function M.newGameState()
         xchg = 100, -- Текущий курс обмена Mhash на LC
         epoch = epoches.cpu, -- Текущее поколение чипов
         chipsList = {}, -- Купленные чипы
+        buyMultiplier = 1, -- Множитель количества при покупке
 
         -- Вычисляемые на каждом такте
         output = 0.0, -- Выработка в Mhash/sec
@@ -50,17 +51,21 @@ function M.newGameState()
 
         local chipInfo = chipsConfig[chipIdx]
 
-        if (self.coins < chipInfo.cost) or (self.epoch < chipInfo.epoch) then
+        local cost = chipInfo.cost * self.buyMultiplier
+
+        if (self.coins < cost) or (self.epoch < chipInfo.epoch) then
             return false
         end
 
-        self.coins = self.coins - chipInfo.cost
-        self:addChip(chipIdx)
+        self.coins = self.coins - cost
+        self:addChip(chipIdx, self.buyMultiplier)
 
         return true
     end
 
-    function state:addChip(chipIdx)
+    function state:addChip(chipIdx, mult)
+        local mult = mult or 1
+
         local ourChips
         for _, chips in ipairs(self.chipsList) do
             if chips.idx == chipIdx then
@@ -77,7 +82,7 @@ function M.newGameState()
             ourChips.idx = chipIdx
         end
 
-        ourChips.count = ourChips.count + 1
+        ourChips.count = ourChips.count + mult
     end
 
     function state:getShopChipInfo(chipIdx)
@@ -164,6 +169,15 @@ function M.newGameState()
         end
 
         return shortInfo
+    end
+
+    function state:setBuyMultiplier(mult)
+        if self.buyMultiplier == mult then
+            return false
+        end
+
+        self.buyMultiplier = mult
+        return true
     end
 
     return state
