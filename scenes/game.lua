@@ -1,7 +1,6 @@
 local fontName = fontName
 
 local display = display
-local require = require
 local ipairs = ipairs
 
 local getTimer = system.getTimer
@@ -30,13 +29,22 @@ function scene:loadResources()
         numFrames = self.chipsCount,
     }
     self.chipsImageSheet = graphics.newImageSheet("data/chips.png", options)
+
+    local options = {
+        width = 64,
+        height = 64,
+        numFrames = 2,
+    }
+    self.turboButtonImageSheet = graphics.newImageSheet("data/turbo.png", options)
 end
 
 function scene:setup()
     local W, H = display.contentWidth, display.contentHeight
 
     local objects = {}
-    scene.objects = objects
+    self.objects = objects
+
+    self.farmRowHeight = 130
 
     local txtCoins = display.newText({ text = '', width = W, font = fontName, fontSize = 32, align = 'left' })
     txtCoins:setFillColor(1, 1, 0.4)
@@ -73,7 +81,6 @@ function scene:setupFarmTableAndTitle()
     local W, H = display.contentWidth, display.contentHeight
 
     local farmPercentWidth = 60
-    local farmRowHeight = 100
 
     local function onFarmRowRender(event)
         farmBuilder.createRow(scene, event.row)
@@ -81,7 +88,7 @@ function scene:setupFarmTableAndTitle()
 
     local tblFarm = widget.newTableView({
         width = W * (farmPercentWidth / 100),
-        height = H - farmRowHeight - 5,
+        height = H - self.farmRowHeight - 5,
         isBounceEnabled = false,
         onRowRender = onFarmRowRender,
     })
@@ -97,7 +104,7 @@ function scene:setupFarmTableAndTitle()
     bg:setFillColor(0.3, 0.3, 0.3)
     tblFarm:insert(bg)
 
-    local tblfarmScroller = tableMouseScroller(farmRowHeight)
+    local tblfarmScroller = tableMouseScroller(self.farmRowHeight)
     tblFarm:addEventListener("mouse", function(event) tblfarmScroller(event) end)
 
     self.view:insert(tblFarm)
@@ -243,7 +250,7 @@ function scene:updateFarm()
         else
             -- появилась новая строка
             self.objects.tblFarm:insertRow({
-                rowHeight = 100,
+                rowHeight = self.farmRowHeight,
                 params = {
                     idx = chips.idx,
                 },
@@ -279,11 +286,15 @@ function scene:updateCounters()
         self:updateTxtExchange()
     end
 
-    if shortInfo.changedConsumptionCost then
+    if shortInfo.changedConsumption then
         self:updateTxtElecBill()
     end
 
     self:updateShop() -- ToDo: обновлять только тогда, когда нужно
+
+    if shortInfo.changedFarm then
+        self:updateFarm()
+    end
 end
 
 scene:addEventListener("show", function(event)
@@ -298,7 +309,7 @@ scene:addEventListener("show", function(event)
         scene:updateTxtElecBill()
 
         scene.updateCountersDt = getTimer()
-        timer.performWithDelay(250, function() scene:updateCounters() end, 0)
+        timer.performWithDelay(150, function() scene:updateCounters() end, 0)
     end
 end)
 

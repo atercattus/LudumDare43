@@ -9,6 +9,9 @@ local config = require("data.config")
 local epoches = config.epoches
 local chipsConfig = config.chips
 
+local turboBoostStep = 5 -- На сколько одно нажатие Turbo ускоряет работу
+local turboFadingStep = 2 -- На сколько за секунду замедляется Turbo режим
+
 function M.newGameState()
     local state = {
         -- Состояние
@@ -85,6 +88,23 @@ function M.newGameState()
         return nil
     end
 
+    function state:turboBoost(chipIdx)
+        local ourChips
+        for _, chips in ipairs(self.chipsList) do
+            if chips.idx == chipIdx then
+                ourChips = chips
+                break
+            end
+        end
+        if ourChips == nil then
+            return
+        end
+
+        ourChips.turboBoost = ourChips.turboBoost + turboBoostStep
+
+        -- ToDo: if ourChips.turboBoost >= 100 - ПЕРЕГРЕВ
+    end
+
     function state:processingTick(dt)
         local shortInfo = {
             changedCoins = false,
@@ -92,6 +112,7 @@ function M.newGameState()
             changedXchg = false,
             changedConsumption = false,
             changedConsumptionCost = false, -- ToDo: self.consumptionCost
+            changedFarm = false,
         }
 
         local consumption = 0
@@ -100,9 +121,25 @@ function M.newGameState()
         if dt > 0 then
             for _, chips in ipairs(self.chipsList) do
                 local chipInfo = chipsConfig[chips.idx]
-                consumption = consumption + chips.count * chipInfo.power_consumption
-                output = output + chips.count * chipInfo.output
-                outputTotal = outputTotal + chips.count * chipInfo.output * dt
+
+                local boost = chips.turboBoost
+                if boost > 0 then
+                    shortInfo.changedFarm = true
+                    boost = boost - turboFadingStep * dt
+                    if boost > 100 then
+                        boost = 100
+                    elseif boost < 0 then
+                        boost = 0
+                    end
+                    chips.turboBoost = boost
+                end
+
+
+                local count = chips:turboBoostCount()
+
+                consumption = consumption + count * chipInfo.power_consumption
+                output = output + count * chipInfo.output
+                outputTotal = outputTotal + count * chipInfo.output * dt
             end
         end
 
@@ -130,7 +167,13 @@ function M.newChipsState()
     local state = {
         idx = 0, -- Индекс в массиве config.chips
         count = 0, -- Общее количество
+        turboBoost = 0, -- "Турбо" режим в процентах от максимума
     }
+
+    function state:turboBoostCount()
+        -- При активном бусте чипов как бы становится больше
+        return self.count * ((self.turboBoost / 100) + 1)
+    end
 
     return state
 end
