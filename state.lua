@@ -18,7 +18,7 @@ local electricityBillCoeff = 0.0001 -- Стоимость 1 W/s в LC
 function M.newGameState()
     local state = {
         -- Состояние
-        coins = 500 + 43.0, -- Сколько всего монет доступно (LC)
+        coins = 43.0, -- Сколько всего монет доступно (LC)
         xchg = 100, -- Текущий курс обмена Mhash на LC
         epoch = epoches.cpu, -- Текущее поколение чипов
         chipsList = {}, -- Купленные чипы
