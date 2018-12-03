@@ -11,6 +11,9 @@ local powers = { 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' }
 -- В UI измеряю хеши сразу в Mega+
 local hashesUIMultiplier = 1000*1000
 
+-- В UI измеряю хеши сразу в часах+
+local wattUIMultiplier = 3600
+
 function M.tableMouseScroller(rowHeight)
     return function(event)
         local tbl = event.target
@@ -32,7 +35,8 @@ function M.tableMouseScroller(rowHeight)
 end
 
 function M.format_Wsec(value)
-    return M.formatWithSiffix(value, ' W/s')
+    value = value * wattUIMultiplier
+    return M.formatWithSiffix(value, ' W/h')
 end
 
 function M.format_Hsec(value)

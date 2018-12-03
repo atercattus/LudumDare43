@@ -546,7 +546,8 @@ scene:addEventListener("show", function(event)
                     scene:updateShopChipTypeTabs()
                 end
             elseif event.keyName == 'f6' then
-                scene.gameState.coins = scene.gameState.coins + 10 * 1000 * 1000
+                scene.gameState.coins = scene.gameState.coins + 5 * 1000
+                scene.gameState.xchg = 115
 
                 scene:updateTxtCoins()
                 if scene.gameState:tryToOpenNewChipType() then
