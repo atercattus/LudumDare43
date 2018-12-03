@@ -385,7 +385,7 @@ end
 function scene:cannotBuyAnim(chipIdx)
     local animObject
 
-    if self.gameState.coins < configChips[chipIdx].cost then
+    if self.gameState.coins < (configChips[chipIdx].cost * self.gameState.buyMultiplier) then
         -- денег не хватает
         animObject = self.objects.txtCoins
     else

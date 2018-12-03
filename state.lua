@@ -93,7 +93,9 @@ function M.newGameState()
 
         local cost = chipInfo.cost * count
 
-        if (self.coins < cost) or (self.epoch < chipInfo.epoch) or (self.consumption + chipInfo.power_consumption > self:getConsumptionLimit()) then
+        if (self.coins < cost) or (self.epoch < chipInfo.epoch) then
+            return false
+        elseif (self.consumption + (chipInfo.power_consumption * count) > self:getConsumptionLimit()) then
             return false
         end
 
