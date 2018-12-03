@@ -539,6 +539,7 @@ scene:addEventListener("show", function(event)
                 return false
             elseif event.keyName == 'f5' then
                 scene.gameState.coins = scene.gameState.coins + 1000
+                scene.gameState.xchg = 30
 
                 scene:updateTxtCoins()
                 if scene.gameState:tryToOpenNewChipType() then

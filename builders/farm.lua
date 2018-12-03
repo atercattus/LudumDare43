@@ -205,17 +205,17 @@ function M.updateByState(scene, row)
         row.objects.turboIcon.fill.frame = 1
     end
 
-    row.objects.icon.fill.frame = chipInfo.epoch
+    row.objects.icon.fill.frame = scene:getChipFrame(chipIdx)
     row.objects.txtName.text = chipInfo.name
 
     row.objects.txtCount.text = ui_utils.format_count(shopChipInfo.count)
 
-    local count = shopChipInfo:turboBoostCount()
+    local boostCount = shopChipInfo:turboBoostCount()
 
-    local hashes = count * chipInfo.output
+    local hashes = boostCount * chipInfo.output
     row.objects.txtOutput.text = ui_utils.format_Hsec(hashes)
 
-    local watts = count * chipInfo.power_consumption
+    local watts = shopChipInfo.count * chipInfo.power_consumption -- без boostCount
     row.objects.txtConsumption.text = ui_utils.format_Wsec(watts)
 end
 

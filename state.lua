@@ -224,11 +224,11 @@ function M.newGameState()
 
                 chipsCount = chipsCount + chips.count
 
-                local count = chips:turboBoostCount()
+                local boostCount = chips:turboBoostCount()
 
-                consumption = consumption + count * chipInfo.power_consumption
-                output = output + count * chipInfo.output
-                outputTotal = outputTotal + count * chipInfo.output * dt
+                consumption = consumption + chips.count * chipInfo.power_consumption -- без boostCount
+                output = output + boostCount * chipInfo.output
+                outputTotal = outputTotal + boostCount * chipInfo.output * dt
                 shortInfo.changedOutput = true
             end
         end
@@ -284,7 +284,7 @@ function M.newGameState()
         end
 
         if chips.overheat > 20 then
-            local ev = mathRandom(0, 1000) < chips.overheat
+            local ev = mathRandom(0, 800) < chips.overheat
             if ev then
                 local cnt = mathRound(chips.count * 0.01, 0)
                 if cnt == 0 then
