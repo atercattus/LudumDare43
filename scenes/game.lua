@@ -30,10 +30,12 @@ local scene = composer.newScene()
 function scene:getChipFrame(chipIdx)
     if chipIdx <= 9 then -- CPU
         return chipIdx
-    elseif chipIdx < 19 then -- GPU
+    elseif chipIdx <= 18 then -- GPU
         return chipIdx + 1 * (-9 + 16)
-    else -- ASIC
+    elseif chipIdx <= 27 then -- ASIC
         return chipIdx + 2 * (-9 + 16)
+    else
+        return chipIdx + 3 * (-9 + 16)
     end
 
     return chipIdx
@@ -292,7 +294,7 @@ function scene:setupShopTableAndTitle_chipTypeTabs()
         iconBg.anchorY = 0
 
         local icon = display.newRect(0, 0, iconSize, iconSize)
-        local fidx = { [configEpoches.cpu] = 1, [configEpoches.gpu] = 10, [configEpoches.asic] = 19 }
+        local fidx = { [configEpoches.cpu] = 1, [configEpoches.gpu] = 10, [configEpoches.asic] = 19, [configEpoches.alien] = 28 }
         icon.fill = { type = "image", sheet = self.chipsImageSheet, frame = self:getChipFrame(fidx[chipTypeIdx]) }
         icon.x = iconBg.x + 2
         icon.y = iconBg.y + 2

@@ -17,8 +17,6 @@ local configEpochLimits = config.epochLimits
 local turboBoostStep = 5 -- На сколько одно нажатие Turbo ускоряет работу
 local turboFadingStep = 2 -- На сколько за секунду замедляется Turbo режим
 
-local electricityBillCoeff = 0.3 -- Стоимость 1 W/s в LC. В реальности порядка 4к руб за 1кW.
-
 function M.newGameState()
     local state = {
         -- Состояние
