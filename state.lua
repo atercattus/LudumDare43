@@ -33,7 +33,6 @@ function M.newGameState()
         output = 0.0, -- Выработка в Mhash/sec
         outputTotal = 0.0, -- Выработка в hash/sec с момента прошлой покупки LC
         consumption = 0, -- Текущее потребление в W/sec
-        consumptionCost = 0.0, -- Стоимость текущего потребления в LC/sec
         maximumCoins = 0, -- Максимальное (пиковое) полученное число монент за все время
 
         -- Статичные
@@ -41,6 +40,11 @@ function M.newGameState()
         startedAt = systemGetTimer(), -- Время запуска
     }
     state.maximumCoins = state.coins
+
+    function state:getConsumptionLimit()
+        -- Общий лимит по питанию: 100kW/h в секундах
+        return (10 ^ state.epoch) * 1000 / 3600
+    end
 
     function state:clearChipsList()
         self.chipsList = {}
@@ -91,7 +95,7 @@ function M.newGameState()
 
         local cost = chipInfo.cost * count
 
-        if (self.coins < cost) or (self.epoch < chipInfo.epoch) then
+        if (self.coins < cost) or (self.epoch < chipInfo.epoch) or (self.consumption + chipInfo.power_consumption > self:getConsumptionLimit()) then
             return false
         end
 
@@ -254,11 +258,6 @@ function M.newGameState()
 
         shortInfo.changedConsumption = (consumption > 0) or (self.consumption ~= consumption)
         self.consumption = consumption
-        self.consumptionCost = electricityBillCoeff * consumption
-        if self.consumptionCost > 0 then
-            self.coins = self.coins - self.consumptionCost * dt
-            shortInfo.changedCoins = true
-        end
 
         return shortInfo
     end

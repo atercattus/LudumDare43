@@ -36,7 +36,7 @@ end
 
 function M.format_Wsec(value)
     value = value * wattUIMultiplier
-    return M.formatWithSiffix(value, ' W/h')
+    return M.formatWithSiffix(value, 'W/h')
 end
 
 function M.format_Hsec(value)

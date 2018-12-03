@@ -24,17 +24,17 @@ M.chips = {
     { epoch = M.epoches.cpu, cost = 700, output = 80, power_consumption = 130, name = 'Adm Athlete', },
     { epoch = M.epoches.cpu, cost = 1 * 1000, output = 100, power_consumption = 100, name = 'Kernel j7', },
     { epoch = M.epoches.cpu, cost = 3 * 1000, output = 150, power_consumption = 190, name = 'A10-5800K', },
-    { epoch = M.epoches.cpu, cost = 5000, output = 500, power_consumption = 1000, name = 'Smart Fridge', },
+    { epoch = M.epoches.cpu, cost = 5000, output = 500, power_consumption = 500, name = 'Smart Fridge', },
 
     { epoch = M.epoches.gpu, cost = 2 * 1000, output = 200, power_consumption = 170, name = 'Videmus 250', },
     { epoch = M.epoches.gpu, cost = 3 * 1000, output = 400, power_consumption = 160, name = 'AdvanDev X1', },
     { epoch = M.epoches.gpu, cost = 5 * 1000, output = 830, power_consumption = 150, name = 'Poweron 5970', },
     { epoch = M.epoches.gpu, cost = 10 * 1000, output = 2 * Gh, power_consumption = 140, name = 'GTX Uber', },
     { epoch = M.epoches.gpu, cost = 20 * 1000, output = 50 * Gh, power_consumption = 130, name = 'GTY', },
-    { epoch = M.epoches.gpu, cost = 20 * 1000, output = 200 * Gh, power_consumption = 10 * 1000, name = 'Black Hole', },
+    { epoch = M.epoches.gpu, cost = 20 * 1000, output = 200 * Gh, power_consumption = 1000, name = 'Black Hole', },
     { epoch = M.epoches.gpu, cost = 50 * 1000, output = 900 * Gh, power_consumption = 120, name = 'Thor', },
     { epoch = M.epoches.gpu, cost = 100 * 1000, output = 4 * Th, power_consumption = 110, name = 'Odin', },
-    { epoch = M.epoches.gpu, cost = 5 * 1000 * 1000, output = 100 * Th, power_consumption = 1000, name = 'Voodoo', },
+    { epoch = M.epoches.gpu, cost = 5 * 1000 * 1000, output = 100 * Th, power_consumption = 500, name = 'Voodoo', },
 
     --{ epoch = M.epoches.asic, cost = INF, output = 28 * Th, power_consumption = 1600, name = 'Realasic', }, -- 120k rub
     { epoch = M.epoches.asic, cost = 1000 * 1000, output = 28 * Th, power_consumption = 1600, name = 'ASIC#1', },

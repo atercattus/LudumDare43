@@ -169,14 +169,14 @@ function scene:setupFarmTableAndTitle()
     self.view:insert(txtFarm)
     scene.objects.txtFarm = txtFarm
 
-    local txtElecBill = display.newText({ text = '', width = W, font = fontName, fontSize = 28, align = 'right' })
-    txtElecBill:setFillColor(0.8, 1, 1)
-    txtElecBill.anchorX = 1
-    txtElecBill.anchorY = 1
-    txtElecBill.x = tblFarm.contentBounds.xMax - 5
-    txtElecBill.y = tblFarm.contentBounds.yMin - 5
-    self.view:insert(txtElecBill)
-    scene.objects.txtElecBill = txtElecBill
+    local txtConsumption = display.newText({ text = '', width = W, font = fontName, fontSize = 28, align = 'right' })
+    txtConsumption:setFillColor(0.8, 1, 1)
+    txtConsumption.anchorX = 1
+    txtConsumption.anchorY = 1
+    txtConsumption.x = tblFarm.contentBounds.xMax - 5
+    txtConsumption.y = tblFarm.contentBounds.yMin - 5
+    self.view:insert(txtConsumption)
+    scene.objects.txtConsumption = txtConsumption
 end
 
 function scene:setupShopTableAndTitle()
@@ -365,9 +365,9 @@ function scene:updateTxtOutput()
     self.objects.txtHashPerSec.text = ui_utils.format_H(state.outputTotal) .. ' (' .. ui_utils.format_Hsec(state.output) .. ')'
 end
 
-function scene:updateTxtElecBill()
+function scene:updateTxtComsumption()
     local state = self.gameState
-    self.objects.txtElecBill.text = 'Costs ' .. ui_utils.format_Wsec(state.consumption) .. ': -' .. ui_utils.format_LCsec(state.consumptionCost)
+    self.objects.txtConsumption.text = 'Power supply: ' .. ui_utils.format_Wsec(state.consumption) .. ' from ' .. ui_utils.format_Wsec(state:getConsumptionLimit())
 end
 
 function scene:updateTxtBuyMultiplier()
@@ -506,7 +506,7 @@ function scene:updateCounters()
     end
 
     if shortInfo.changedConsumption then
-        self:updateTxtElecBill()
+        self:updateTxtComsumption()
     end
 
     if shortInfo.changedShopList then
@@ -564,7 +564,7 @@ scene:addEventListener("show", function(event)
         scene:updateTxtOutput()
         scene:updateTxtCoins()
         scene:updateTxtExchange()
-        scene:updateTxtElecBill()
+        scene:updateTxtComsumption()
 
         scene.updateCountersDt = getTimer()
         scene.updateCountersTimer = timer.performWithDelay(150, function() scene:updateCounters() end, 0)
