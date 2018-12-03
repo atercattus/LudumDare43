@@ -41,7 +41,7 @@ function M.newGameState()
 
     function state:getConsumptionLimit()
         -- Общий лимит по питанию: 100kW/h в секундах
-        return (10 ^ state.epoch) * 1000 / 3600
+        return 5 * (10 ^ state.epoch) * 1000 / 3600
     end
 
     function state:clearChipsList()
