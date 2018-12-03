@@ -382,6 +382,35 @@ function scene:updateTxtBuyMultiplier()
     end
 end
 
+function scene:cannotBuyAnim(chipIdx)
+    local animObject
+
+    if self.gameState.coins < configChips[chipIdx].cost then
+        -- денег не хватает
+        animObject = self.objects.txtCoins
+    else
+        -- источника питания не хватает
+        animObject = self.objects.txtConsumption
+    end
+
+    if animObject == nil then
+        return
+    end
+
+    transitionTo(animObject, {
+        time = 300,
+        xScale = 1.5,
+        yScale = 1.5,
+        onComplete = function()
+            transitionTo(animObject, {
+                time = 300,
+                xScale = 1,
+                yScale = 1,
+            })
+        end,
+    })
+end
+
 function scene:buy(idx)
     local shopRow = self.objects.tblShop:getRowAtIndex(idx)
     if shopRow == nil then
@@ -396,33 +425,7 @@ function scene:buy(idx)
         self:updateShop()
     else
         -- не удалось
-
-        local animObject
-
-        if self.gameState.coins < configChips[shopRow.params.idx].cost then
-            -- денег не хватает
-            animObject = self.objects.txtCoins
-        else
-            -- источника питания не хватает
-            animObject = self.objects.txtConsumption
-        end
-
-        if animObject == nil then
-            return
-        end
-
-        transitionTo(animObject, {
-            time = 300,
-            xScale = 1.5,
-            yScale = 1.5,
-            onComplete = function()
-                transitionTo(animObject, {
-                    time = 300,
-                    xScale = 1,
-                    yScale = 1,
-                })
-            end,
-        })
+        self:cannotBuyAnim(shopRow.params.idx)
     end
 end
 
@@ -431,6 +434,9 @@ function scene:buyOrThrowOutChip(idx, count)
 
     if count > 0 then
         needToUpdate = self.gameState:tryToBuy(idx, count)
+        if not needToUpdate then
+            self:cannotBuyAnim(idx)
+        end
     elseif count < 0 then
         needToUpdate = self.gameState:tryToThrowOut(idx, -count)
     end
