@@ -17,10 +17,10 @@ local Ph = 1000 * Th
 
 M.chips = {
     { epoch = M.epoches.cpu, cost = 1, output = 0.6, power_consumption = 15, name = 'Electron 330', },
-    { epoch = M.epoches.cpu, cost = 10, output = 3, power_consumption = 50, name = 'Outel P4', },
-    { epoch = M.epoches.cpu, cost = 70, output = 15, power_consumption = 95, name = 'Phantom II', },
+    { epoch = M.epoches.cpu, cost = 10, output = 3, power_consumption = 30, name = 'Outel P4', },
+    { epoch = M.epoches.cpu, cost = 70, output = 15, power_consumption = 40, name = 'Phantom II', },
     { epoch = M.epoches.cpu, cost = 150, output = 30, power_consumption = 35, name = 'Kernel j3M', },
-    { epoch = M.epoches.cpu, cost = 300, output = 50, power_consumption = 95, name = 'Kernel 2', },
+    { epoch = M.epoches.cpu, cost = 300, output = 50, power_consumption = 60, name = 'Kernel 2', },
     { epoch = M.epoches.cpu, cost = 700, output = 80, power_consumption = 130, name = 'Adm Athlete', },
     { epoch = M.epoches.cpu, cost = 1 * 1000, output = 100, power_consumption = 100, name = 'Kernel j7', },
     { epoch = M.epoches.cpu, cost = 3 * 1000, output = 150, power_consumption = 190, name = 'A10-5800K', },

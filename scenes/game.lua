@@ -396,6 +396,33 @@ function scene:buy(idx)
         self:updateShop()
     else
         -- не удалось
+
+        local animObject
+
+        if self.gameState.coins < configChips[shopRow.params.idx].cost then
+            -- денег не хватает
+            animObject = self.objects.txtCoins
+        else
+            -- источника питания не хватает
+            animObject = self.objects.txtConsumption
+        end
+
+        if animObject == nil then
+            return
+        end
+
+        transitionTo(animObject, {
+            time = 300,
+            xScale = 1.5,
+            yScale = 1.5,
+            onComplete = function()
+                transitionTo(animObject, {
+                    time = 300,
+                    xScale = 1,
+                    yScale = 1,
+                })
+            end,
+        })
     end
 end
 
