@@ -5,4 +5,8 @@ settings =
 		default = "landscapeRight",
 		supported = { "landscapeRight", "landscapeLeft" },
 	},
+	excludeFiles =
+	{
+		all = { "builds/*", "README.md", "build-html5.sh" },
+	},
 }
